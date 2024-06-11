@@ -7,7 +7,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 
-import '../../../domain/entities/movie.dart';
+import '../../../../domain/entities/movie.dart';
 
 class MoviesSlideshow extends StatelessWidget {
   final List<Movie>
@@ -31,7 +31,7 @@ class MoviesSlideshow extends StatelessWidget {
         autoplay: true, //esto es para que se este moviendo automaticamente
         //paginacion personalizada
         pagination:SwiperPagination(
-          margin: const EdgeInsets.only(top:0),//con esto separo un poco los puntos de la imagen
+          margin: const EdgeInsets.only(top:0),//con esto separo un poco los puntos de la imagen, y al establecerla en cero hago que baje todo lo que pueda
           //el DotSwiperPaginationBuilder, es builder preconfigurado
           builder: DotSwiperPaginationBuilder(
             //no pide un buil context, pero si como quiero que se vea

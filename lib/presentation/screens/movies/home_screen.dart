@@ -1,4 +1,4 @@
-import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -49,11 +49,12 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   @override
   Widget build(BuildContext context) {
     //aqui vamos a renderizar la data, es decir vamos a poder ver la data en la pantalla
-    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider); //este va a ser el listado de peliclas
+    //final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider); //este va a ser el listado de peliculas
+    final slideShowMovies = ref.watch(moviesSlideshowProvider);//este provaider lo utilizamos para mostrar una subista de 6 peliculas
     return Column(
       children: [
         const CustomAppbar(),
-        MoviesSlideshow(movies: nowPlayingMovies),
+        MoviesSlideshow(movies: slideShowMovies),
       ],
     );
     /*Este expanden ya lo puedo comentar solo lo utilice para saber que si se mostraban las peliculas */
