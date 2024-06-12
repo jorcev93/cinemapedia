@@ -29,7 +29,11 @@ class MoviedbDatasource extends MoviesDatasource {
     //final dio = Dio();
 
     //instanciamos el dio
-    final response = await dio.get('/movie/now_playing');
+    final response = await dio.get('/movie/now_playing', 
+    //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
+    queryParameters: {
+      'page':page
+    });
     //cuando mando a llamar la data desde el api, tengo que procesarla
     //para ello vamos a utilizar un modelo para leer lo que viene desde moviedb y
     //un maper para que en basado en esa data crear nuestra entidad
@@ -39,7 +43,8 @@ class MoviedbDatasource extends MoviesDatasource {
     final List<Movie> movies = movieDBResponse.results
         //este where lo utilizo para realizar validaciones, y evitarlas realizar el flutter
         .where((moviedb) =>
-            moviedb.posterPath != 'no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
+            moviedb.posterPath !=
+            'no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
         .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
         .toList();
     return movies;

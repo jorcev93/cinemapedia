@@ -1,7 +1,6 @@
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -13,6 +12,8 @@ class HomeScreen extends StatelessWidget {
     return const Scaffold(
       // al utilizar las variables de entorno, el scaffold no puede ser constante por que va a cambiar en ejecucion
       body: _HomeView(),
+      bottomNavigationBar:
+          CustomBottomNavigation(), //mandamos a llamar el menu de navegacion que se muestra en la parte inferior
       /*esto era una prueba, para ver como utilizar las variables de entornno
       body: Center(
         //child: Text(dotenv.env['THE_MOVIEDB_KEY']??'No hay api key'),//asi seria si no utilizo una clase a parte
@@ -49,14 +50,74 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   @override
   Widget build(BuildContext context) {
     //aqui vamos a renderizar la data, es decir vamos a poder ver la data en la pantalla
-    //final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider); //este va a ser el listado de peliculas
-    final slideShowMovies = ref.watch(moviesSlideshowProvider);//este provaider lo utilizamos para mostrar una subista de 6 peliculas
-    return Column(
-      children: [
-        const CustomAppbar(),
-        MoviesSlideshow(movies: slideShowMovies),
-      ],
-    );
+    final nowPlayingMovies = ref.watch(
+        nowPlayingMoviesProvider); //este va a ser el listado de peliculas
+    final slideShowMovies = ref.watch(
+        moviesSlideshowProvider); //este provaider lo utilizamos para mostrar una subista de 6 peliculas
+    //el "SingleChildScrollView" me sirve para mostrar varios "MovieHorizontalListview"
+    //para que el appbar se mueva justo cuando estoy ahciendo scroll, debo utilizar "CustomScrollView" en lugar de "SingleChildScrollView"
+    return CustomScrollView(
+        //el sliver, es un widget que trabaja directamente con el scrolleView
+        slivers: [
+          //esto es para mostrar el appbar
+          const SliverAppBar(
+            floating: true,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: EdgeInsets.all(0),//esto es para que el appbar no se quede centrado 
+              title: CustomAppbar()),
+          ),
+          SliverList(delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Column(
+                children: [
+                  //const CustomAppbar(),//este app bar ya no va a pertenercer a la colum si no al slivers
+                  MoviesSlideshow(movies: slideShowMovies),
+                  //mostrar peliculas en cines
+                  MovieHorizontalListview(
+                    movies: nowPlayingMovies,
+                    title: 'En cines',
+                    subtitle: 'Lunes 20',
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+
+                  //mostrar peliculas en cines
+                  MovieHorizontalListview(
+                    movies: nowPlayingMovies,
+                    title: 'Proximamente',
+                    subtitle: 'En este mes',
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+
+                  //mostrar peliculas proximamente
+                  MovieHorizontalListview(
+                    movies: nowPlayingMovies,
+                    title: 'Populares',
+                    //subtitle: 'Lunes 20',
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+
+                  //mostrar peliculas en cines
+                  MovieHorizontalListview(
+                    movies: nowPlayingMovies,
+                    title: 'Mejor calificadas',
+                    //subtitle: 'Desdesiempre',
+                    loadNextPage: () => ref
+                        .read(nowPlayingMoviesProvider.notifier)
+                        .loadNextPage(),
+                  ),
+                  const SizedBox(height: 10)
+                ],
+              );
+            },
+            childCount: 1
+          ))
+        ]);
     /*Este expanden ya lo puedo comentar solo lo utilice para saber que si se mostraban las peliculas */
     /*return Column(
       children: [

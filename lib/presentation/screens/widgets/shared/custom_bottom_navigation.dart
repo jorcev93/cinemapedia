@@ -7,11 +7,14 @@ class CustomBottomNavigation extends StatelessWidget {
   const CustomBottomNavigation({super.key});
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(//aqui definimos el menu de navegacion
-      items: [
-       BottomNavigationBarItem(icon: Icon(Icons.home_max), label: 'Inicio'),
-       BottomNavigationBarItem(icon: Icon(Icons.label_outline), label: 'Categorias'),
-       BottomNavigationBarItem(icon: Icon(Icons.favorite_outline), label: 'Favoritos'),
+    return BottomNavigationBar(
+      elevation: 0, //aqui definimos el menu de navegacion
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.home_max), label: 'Inicio'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.label_outline), label: 'Categorias'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.favorite_outline), label: 'Favoritos'),
       ],
     );
   }
