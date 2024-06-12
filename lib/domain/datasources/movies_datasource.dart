@@ -8,8 +8,11 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
 
 abstract class MoviesDatasource {
-  //estoy definiendo el metodo que sirve para que me traiga 
-  //la cartelera que esta disponible para hoy y estoy 
+  //estoy definiendo el metodo que sirve para que me traiga
+  //la cartelera que esta disponible para hoy y estoy
   //enviando como parametro que me traiga la primera pagina por que esto va a estar paginado
-  Future<List<Movie>> getNowPlaying({int page =1});
+  Future<List<Movie>> getNowPlaying({int page = 1});
+
+  //metodo para traer las peliculas ppopulares
+  Future<List<Movie>> getPopular({int page = 1});
 }

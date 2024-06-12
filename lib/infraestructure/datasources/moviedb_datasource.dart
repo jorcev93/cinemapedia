@@ -18,6 +18,24 @@ class MoviedbDatasource extends MoviesDatasource {
         'languaje':
             'es-MX' //definimos el lenguaje que queremos utilizar en nuestra app
       }));
+
+  //Este Metodo es para mandar a llamar las peliculas tanto en getMovieNowPlaying, getPopular
+  List<Movie> _jsonToMovies(Map<String, dynamic> json) {
+    //cuando mando a llamar la data desde el api, tengo que procesarla
+    //para ello vamos a utilizar un modelo para leer lo que viene desde moviedb y
+    //un maper para que en basado en esa data crear nuestra entidad
+    final movieDBResponse = MovieDbResponse.fromJson(json); //recibimos el json
+    //Lo mapeamos y recibimos un listado de movies
+    final List<Movie> movies = movieDBResponse.results
+        //este where lo utilizo para realizar validaciones, y evitarlas realizar el flutter
+        .where((moviedb) =>
+            moviedb.posterPath !=
+            'no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
+        .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
+        .toList();
+    return movies;
+  }
+
   //aqui se debe implementar lo que el datasource me pide
   //voy a sobreescribir el metodo que cree en MoviesDatasource
   @override
@@ -29,11 +47,12 @@ class MoviedbDatasource extends MoviesDatasource {
     //final dio = Dio();
 
     //instanciamos el dio
-    final response = await dio.get('/movie/now_playing', 
-    //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
-    queryParameters: {
-      'page':page
-    });
+    final response = await dio.get('/movie/now_playing',
+        //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
+        queryParameters: {'page': page});
+    return _jsonToMovies(response.data);
+    /*Este es lo mismo que en el getPopular por lo que voy a crear un metodo a parte*/
+    /*
     //cuando mando a llamar la data desde el api, tengo que procesarla
     //para ello vamos a utilizar un modelo para leer lo que viene desde moviedb y
     //un maper para que en basado en esa data crear nuestra entidad
@@ -47,6 +66,37 @@ class MoviedbDatasource extends MoviesDatasource {
             'no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
         .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
         .toList();
-    return movies;
+    return movies;*/
+  }
+
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) async {
+    //dentro del metodo; Dio("aqui van varias configuraciones globales")
+    //se lo podria deinir dentro de este metodo, pero si quiero utilizarlo
+    //en diferentes metodos, tendria que volverlo a definir por cada uno de ellos
+    //para ello es mejor elevarlo a nivel de propiedad de la clase
+    //final dio = Dio();
+
+    //instanciamos el dio
+    final response = await dio.get('/movie/popular', 
+        //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
+        queryParameters: {'page': page});
+    return _jsonToMovies(response.data);
+    /*Este es lo mismo que en el getNowPlaying por lo que voy a crear un metodo a parte*/
+    /*
+    //cuando mando a llamar la data desde el api, tengo que procesarla
+    //para ello vamos a utilizar un modelo para leer lo que viene desde moviedb y
+    //un maper para que  basado en esa data crear nuestra entidad
+    final movieDBResponse =
+        MovieDbResponse.fromJson(response.data); //recibimos el json
+    //Lo mapeamos y recibimos un listado de movies
+    final List<Movie> movies = movieDBResponse.results
+        //este where lo utilizo para realizar validaciones, y evitarlas realizar el flutter
+        .where((moviedb) =>
+            moviedb.posterPath !=
+            'no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
+        .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
+        .toList();
+    return movies;*/
   }
 }

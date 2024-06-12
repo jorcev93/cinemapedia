@@ -1,7 +1,6 @@
 //este es el menu de navegacion que se mueestra en la parte inferior de la pantalla
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
   const CustomBottomNavigation({super.key});

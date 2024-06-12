@@ -45,6 +45,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     ref
         .read(nowPlayingMoviesProvider.notifier)
         .loadNextPage(); //con esto solo mandamos a llamar la data
+    ref.read(popularMoviesProvider.notifier).loadNextPage();//llamamos el listado de peliculas populares
   }
 
   @override
@@ -54,6 +55,8 @@ class _HomeViewState extends ConsumerState<_HomeView> {
         nowPlayingMoviesProvider); //este va a ser el listado de peliculas
     final slideShowMovies = ref.watch(
         moviesSlideshowProvider); //este provaider lo utilizamos para mostrar una subista de 6 peliculas
+    final popularMovies = ref.watch(popularMoviesProvider);
+
     //el "SingleChildScrollView" me sirve para mostrar varios "MovieHorizontalListview"
     //para que el appbar se mueva justo cuando estoy ahciendo scroll, debo utilizar "CustomScrollView" en lugar de "SingleChildScrollView"
     return CustomScrollView(
@@ -63,60 +66,60 @@ class _HomeViewState extends ConsumerState<_HomeView> {
           const SliverAppBar(
             floating: true,
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: EdgeInsets.all(0),//esto es para que el appbar no se quede centrado 
-              title: CustomAppbar()),
+                titlePadding: EdgeInsets.all(
+                    0), //esto es para que el appbar no se quede centrado
+                title: CustomAppbar()),
           ),
-          SliverList(delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return Column(
-                children: [
-                  //const CustomAppbar(),//este app bar ya no va a pertenercer a la colum si no al slivers
-                  MoviesSlideshow(movies: slideShowMovies),
-                  //mostrar peliculas en cines
-                  MovieHorizontalListview(
-                    movies: nowPlayingMovies,
-                    title: 'En cines',
-                    subtitle: 'Lunes 20',
-                    loadNextPage: () => ref
-                        .read(nowPlayingMoviesProvider.notifier)
-                        .loadNextPage(),
-                  ),
+          SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+            return Column(
+              children: [
+                //const CustomAppbar(),//este app bar ya no va a pertenercer a la colum si no al slivers
+                MoviesSlideshow(movies: slideShowMovies),
+               
+                //mostrar peliculas en cines
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'En cines',
+                  subtitle: 'Lunes 20',
+                  loadNextPage: () => ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
 
-                  //mostrar peliculas en cines
-                  MovieHorizontalListview(
-                    movies: nowPlayingMovies,
-                    title: 'Proximamente',
-                    subtitle: 'En este mes',
-                    loadNextPage: () => ref
-                        .read(nowPlayingMoviesProvider.notifier)
-                        .loadNextPage(),
-                  ),
+                //mostrar peliculas proximamente
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'Proximamente',
+                  subtitle: 'En este mes',
+                  loadNextPage: () => ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
 
-                  //mostrar peliculas proximamente
-                  MovieHorizontalListview(
-                    movies: nowPlayingMovies,
-                    title: 'Populares',
-                    //subtitle: 'Lunes 20',
-                    loadNextPage: () => ref
-                        .read(nowPlayingMoviesProvider.notifier)
-                        .loadNextPage(),
-                  ),
+                //mostrar peliculas populares
+                MovieHorizontalListview(
+                  movies: popularMovies,
+                  title: 'Populares',
+                  //subtitle: 'Lunes 20',
+                  loadNextPage: () => ref
+                      .read(popularMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
 
-                  //mostrar peliculas en cines
-                  MovieHorizontalListview(
-                    movies: nowPlayingMovies,
-                    title: 'Mejor calificadas',
-                    //subtitle: 'Desdesiempre',
-                    loadNextPage: () => ref
-                        .read(nowPlayingMoviesProvider.notifier)
-                        .loadNextPage(),
-                  ),
-                  const SizedBox(height: 10)
-                ],
-              );
-            },
-            childCount: 1
-          ))
+                //mostrar peliculas en cines
+                MovieHorizontalListview(
+                  movies: nowPlayingMovies,
+                  title: 'Mejor calificadas',
+                  //subtitle: 'Desdesiempre',
+                  loadNextPage: () => ref
+                      .read(nowPlayingMoviesProvider.notifier)
+                      .loadNextPage(),
+                ),
+                const SizedBox(height: 10)
+              ],
+            );
+          }, childCount: 1))
         ]);
     /*Este expanden ya lo puedo comentar solo lo utilice para saber que si se mostraban las peliculas */
     /*return Column(

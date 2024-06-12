@@ -1,3 +1,7 @@
+//NOTA: SI ES QUE ESTUVIERAMOS TRABAJANDO CON EL GESTOR DE ESTDO PROVIDER
+//NO PODRIAMOS CREAR VARIAS INSTANCIAS DEL MISMO PROVIDER QUE SON nowPlayingMoviesProvider, popularMoviesProvider
+//PERO COMO ESTAMOS TRABAJANDO CON Riverpod, SI LO PODEMOS HACER, ES MAS PODRIAMOS TENER TODAS LAS INSTANCIAS QUE QUISIERAMOS
+
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +20,16 @@ final nowPlayingMoviesProvider =
   //esto solo es una referencia a la funcion
   final fetechMoreMovies = ref.watch(movieRepositoryProvider).getNowPlaying;
   return MoviesNotifier(fetchMoreMovies: fetechMoreMovies); //rtorno una isntancia de MoviesNotifier
+});
+
+
+final popularMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetechMoreMovies = ref.watch(movieRepositoryProvider).getPopular;
+  return MoviesNotifier(fetchMoreMovies: fetechMoreMovies); //rtorno una isntancia de MoviesNotifier
+
+
+  
 });
 
 //esto me sirve para especificar el tipo de funcion que espero

@@ -16,4 +16,7 @@ abstract class MoviesRepository {
   //la cartelera que esta disponible para hoy y estoy 
   //enviando como parametro que me traiga la primera pagina por que esto va a estar paginado
   Future<List<Movie>> getNowPlaying({int page =1});
+
+  //para traer las peliculas mas populares
+   Future<List<Movie>> getPopular({int page = 1});
 }
