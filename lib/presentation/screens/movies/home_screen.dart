@@ -39,13 +39,22 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   //aqui en lugar de State va a ser un ConsumerState, esto por que transformamos el StatefulWidget a  ConsumerStatefulWidget
 
   //este init es propo de un statefullwiget
+  //aqui lanzamos las eticiones
   @override
   void initState() {
     super.initState();
     ref
         .read(nowPlayingMoviesProvider.notifier)
         .loadNextPage(); //con esto solo mandamos a llamar la data
-    ref.read(popularMoviesProvider.notifier).loadNextPage();//llamamos el listado de peliculas populares
+    ref
+        .read(upcomingMoviesProvider.notifier)
+        .loadNextPage(); //llamamos el listado de peliculas proximamente
+    ref
+        .read(popularMoviesProvider.notifier)
+        .loadNextPage(); //llamamos el listado de peliculas populares
+    ref
+        .read(topRatedMoviesProvider.notifier)
+        .loadNextPage(); //llamamos las peliculas mejor calificadas
   }
 
   @override
@@ -56,6 +65,10 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     final slideShowMovies = ref.watch(
         moviesSlideshowProvider); //este provaider lo utilizamos para mostrar una subista de 6 peliculas
     final popularMovies = ref.watch(popularMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
+
+    return FullScreenLoader();
 
     //el "SingleChildScrollView" me sirve para mostrar varios "MovieHorizontalListview"
     //para que el appbar se mueva justo cuando estoy ahciendo scroll, debo utilizar "CustomScrollView" en lugar de "SingleChildScrollView"
@@ -76,7 +89,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
               children: [
                 //const CustomAppbar(),//este app bar ya no va a pertenercer a la colum si no al slivers
                 MoviesSlideshow(movies: slideShowMovies),
-               
+
                 //mostrar peliculas en cines
                 MovieHorizontalListview(
                   movies: nowPlayingMovies,
@@ -89,12 +102,11 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
                 //mostrar peliculas proximamente
                 MovieHorizontalListview(
-                  movies: nowPlayingMovies,
+                  movies: upcomingMovies,
                   title: 'Proximamente',
                   subtitle: 'En este mes',
-                  loadNextPage: () => ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .loadNextPage(),
+                  loadNextPage: () =>
+                      ref.read(upcomingMoviesProvider.notifier).loadNextPage(),
                 ),
 
                 //mostrar peliculas populares
@@ -102,19 +114,17 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                   movies: popularMovies,
                   title: 'Populares',
                   //subtitle: 'Lunes 20',
-                  loadNextPage: () => ref
-                      .read(popularMoviesProvider.notifier)
-                      .loadNextPage(),
+                  loadNextPage: () =>
+                      ref.read(popularMoviesProvider.notifier).loadNextPage(),
                 ),
 
-                //mostrar peliculas en cines
+                //mostrar peliculas mejor calificadas
                 MovieHorizontalListview(
-                  movies: nowPlayingMovies,
+                  movies: topRatedMovies,
                   title: 'Mejor calificadas',
                   //subtitle: 'Desdesiempre',
-                  loadNextPage: () => ref
-                      .read(nowPlayingMoviesProvider.notifier)
-                      .loadNextPage(),
+                  loadNextPage: () =>
+                      ref.read(topRatedMoviesProvider.notifier).loadNextPage(),
                 ),
                 const SizedBox(height: 10)
               ],

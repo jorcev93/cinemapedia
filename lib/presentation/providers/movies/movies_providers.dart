@@ -22,15 +22,24 @@ final nowPlayingMoviesProvider =
   return MoviesNotifier(fetchMoreMovies: fetechMoreMovies); //rtorno una isntancia de MoviesNotifier
 });
 
+final upcomingMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetechMoreMovies = ref.watch(movieRepositoryProvider).getUpcoming;
+  return MoviesNotifier(fetchMoreMovies: fetechMoreMovies); //rtorno una isntancia de MoviesNotifier
+});
 
 final popularMoviesProvider =
     StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
   final fetechMoreMovies = ref.watch(movieRepositoryProvider).getPopular;
   return MoviesNotifier(fetchMoreMovies: fetechMoreMovies); //rtorno una isntancia de MoviesNotifier
-
-
-  
 });
+
+final topRatedMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetechMoreMovies = ref.watch(movieRepositoryProvider).getTopRated;
+  return MoviesNotifier(fetchMoreMovies: fetechMoreMovies); //rtorno una isntancia de MoviesNotifier
+});
+
 
 //esto me sirve para especificar el tipo de funcion que espero
 //esto me sirve para que el MoviesNotifier, cuando quiera cargar las siguientes peliculas
