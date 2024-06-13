@@ -60,15 +60,16 @@ class _HomeViewState extends ConsumerState<_HomeView> {
   @override
   Widget build(BuildContext context) {
     //aqui vamos a renderizar la data, es decir vamos a poder ver la data en la pantalla
-    final nowPlayingMovies = ref.watch(
-        nowPlayingMoviesProvider); //este va a ser el listado de peliculas
+    final itialLoadig = ref.watch(initialLoadingProvider);
+    if(itialLoadig) return const FullScreenLoader();
+
     final slideShowMovies = ref.watch(
         moviesSlideshowProvider); //este provaider lo utilizamos para mostrar una subista de 6 peliculas
+    final nowPlayingMovies = ref.watch(
+        nowPlayingMoviesProvider); //este va a ser el listado de peliculas
     final popularMovies = ref.watch(popularMoviesProvider);
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
     final topRatedMovies = ref.watch(topRatedMoviesProvider);
-
-    return FullScreenLoader();
 
     //el "SingleChildScrollView" me sirve para mostrar varios "MovieHorizontalListview"
     //para que el appbar se mueva justo cuando estoy ahciendo scroll, debo utilizar "CustomScrollView" en lugar de "SingleChildScrollView"
