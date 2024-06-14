@@ -18,7 +18,6 @@ class MovieRepositoryImpl extends MoviesRepository {
             page); //retornamos el datasource y recibimos como parametro el page
   }
 
-
   //aqui vamos a mandar a llamar el datasource, para que llame este getupComing
   @override
   Future<List<Movie>> getUpcoming({int page = 1}) {
@@ -30,10 +29,15 @@ class MovieRepositoryImpl extends MoviesRepository {
   Future<List<Movie>> getPopular({int page = 1}) {
     return datasource.getPopular(page: page);
   }
-  
-   //aqui vamos a mandar a llamar el datasource, para que llame este getTopRate
+
+  //aqui vamos a mandar a llamar el datasource, para que llame este getTopRate
   @override
   Future<List<Movie>> getTopRated({int page = 1}) {
     return datasource.getTopRated(page: page);
+  }
+
+  @override
+  Future<Movie> getMovieById(String id) {
+    return getMovieById(id);
   }
 }
