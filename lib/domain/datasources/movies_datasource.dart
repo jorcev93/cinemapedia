@@ -1,3 +1,4 @@
+//NOTA: EN DOMAIN NO HAGO IMPLEMENTACIONES SOLO DFINO COMO VA A LUCIR LOS DATASOURCE
 //NOTA: LA DIFERENCIA ENTRE REPOSITORY Y LOS DATASOURCE
 //ES QE LOS REPOSITORY SON LOS QUE VAN A LLAMAR LOS DATASOURCE
 //*POR ESO ES QUE SON CASI IDENTICOS */
@@ -11,16 +12,19 @@ abstract class MoviesDatasource {
   //estoy definiendo el metodo que sirve para que me traiga
   //la cartelera que esta disponible para hoy y estoy
   //enviando como parametro que me traiga la primera pagina por que esto va a estar paginado
-  
+
   //peliculas que estan en el cine
   Future<List<Movie>> getNowPlaying({int page = 1});
 
   //metodo para traer las peliculas upComing(proximamente)
   Future<List<Movie>> getUpcoming({int page = 1});
-  
+
   //metodo para traer las peliculas ppopulares
   Future<List<Movie>> getPopular({int page = 1});
 
   //metodo para traer las peliculas upComing(mejor calificadas)
   Future<List<Movie>> getTopRated({int page = 1});
+
+  //metodo para traer una pelicula por el id
+  Future<Movie> getMovieById(String id);
 }

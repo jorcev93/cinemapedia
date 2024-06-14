@@ -1,8 +1,13 @@
 //aqui tambien utilizamos el paquete intl, que sirve para que los nueros sean mas faciles de leer,
 //para utilizarlo de forma mas sefura en lugar de utilizar el paquete directamente se crea
 //un archivo en la siguiente ruta "config/helpers/human_formats.dart"
+
+//NOTA HAY AVRIOS LUGARES DE DONDE PODRIAMOS TOMAR LA NAVEGACION PARA A IR A VER
+//LAS CARACTERISTICAS DE CADA PELICULA, PERO AHORA VAMOS A IMPLEMENTARLA EN EL METODO
+//DONDE SE MUESTRA LA IMAGEN, QUE SERIA EN "_Slide"
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../config/helpers/human_formats.dart';
 import '../../../../domain/entities/movie.dart';
@@ -27,21 +32,20 @@ class MovieHorizontalListview extends StatefulWidget {
 
 class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
   final scrollController = ScrollController();
-   @override
+  @override
   void initState() {
     super.initState();
-    
-    scrollController.addListener(() {
-      if ( widget.loadNextPage == null ) return;//si el loadNextPage es igual a null no se hace nada
 
-      if ( (scrollController.position.pixels + 200) >= scrollController.position.maxScrollExtent ) {
+    scrollController.addListener(() {
+      if (widget.loadNextPage == null)
+        return; //si el loadNextPage es igual a null no se hace nada
+
+      if ((scrollController.position.pixels + 200) >=
+          scrollController.position.maxScrollExtent) {
         widget.loadNextPage!();
       }
-
     });
-
   }
-
 
   //cada que se crea un listener, inmediatamente se debe crear un dispose
   //esto se utiliza para destruir los widgets creados en el initstate
@@ -69,6 +73,7 @@ class _MovieHorizontalListviewState extends State<MovieHorizontalListview> {
             physics:
                 const BouncingScrollPhysics(), //esto es para que todos tenga una apariencia igual
             itemBuilder: (context, index) {
+              //este FadeInRight, es un metodo del paquete animate_do, es para la animacion del movie_Horizontal_listview
               return FadeInRight(child: _Slide(movie: widget.movies[index]));
             },
           ))
@@ -148,7 +153,12 @@ class _Slide extends StatelessWidget {
                           child: CircularProgressIndicator(strokeWidth: 2)),
                     );
                   }
-                  return FadeIn(child: child);
+                  return GestureDetector(
+                    //se utiliza push por que quiero que se pueda regresar a la pantalla anterior
+                    onTap: () => context.push('/movie/${movie.id}'), 
+                    //este FadeIn, es un metodo del paquete animate_do, es para la animacion para que las imagenes tengan la misma altura
+                    child: FadeIn(child: child),
+                  );
                 },
               ),
             ),

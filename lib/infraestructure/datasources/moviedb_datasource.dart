@@ -5,6 +5,7 @@ import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/infraestructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/infraestructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infraestructure/models/moviedb/moviedb_response.dart';
 import 'package:dio/dio.dart';
 
@@ -38,7 +39,7 @@ class MoviedbDatasource extends MoviesDatasource {
 
   //aqui se debe implementar lo que el datasource me pide
   //voy a sobreescribir el metodo que cree en MoviesDatasource
-  @override//para traer las peliculas que estan en el cine
+  @override //para traer las peliculas que estan en el cine
   Future<List<Movie>> getNowPlaying({int page = 1}) async {
     //dentro del metodo; Dio("aqui van varias configuraciones globales")
     //se lo podria deinir dentro de este metodo, pero si quiero utilizarlo
@@ -69,8 +70,7 @@ class MoviedbDatasource extends MoviesDatasource {
     return movies;*/
   }
 
-
-  @override//peliculas que estan en proximamente
+  @override //peliculas que estan en proximamente
   Future<List<Movie>> getUpcoming({int page = 1}) async {
     //dentro del metodo; Dio("aqui van varias configuraciones globales")
     //se lo podria deinir dentro de este metodo, pero si quiero utilizarlo
@@ -79,7 +79,7 @@ class MoviedbDatasource extends MoviesDatasource {
     //final dio = Dio();
 
     //instanciamos el dio
-    final response = await dio.get('/movie/upcoming', 
+    final response = await dio.get('/movie/upcoming',
         //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
         queryParameters: {'page': page});
     return _jsonToMovies(response.data);
@@ -101,7 +101,7 @@ class MoviedbDatasource extends MoviesDatasource {
     return movies;*/
   }
 
-  @override//peliculas que son populares
+  @override //peliculas que son populares
   Future<List<Movie>> getPopular({int page = 1}) async {
     //dentro del metodo; Dio("aqui van varias configuraciones globales")
     //se lo podria deinir dentro de este metodo, pero si quiero utilizarlo
@@ -110,7 +110,7 @@ class MoviedbDatasource extends MoviesDatasource {
     //final dio = Dio();
 
     //instanciamos el dio
-    final response = await dio.get('/movie/popular', 
+    final response = await dio.get('/movie/popular',
         //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
         queryParameters: {'page': page});
     return _jsonToMovies(response.data);
@@ -132,7 +132,7 @@ class MoviedbDatasource extends MoviesDatasource {
     return movies;*/
   }
 
-  @override//peliculas mejor calificadas
+  @override //peliculas mejor calificadas
   Future<List<Movie>> getTopRated({int page = 1}) async {
     //dentro del metodo; Dio("aqui van varias configuraciones globales")
     //se lo podria deinir dentro de este metodo, pero si quiero utilizarlo
@@ -141,7 +141,7 @@ class MoviedbDatasource extends MoviesDatasource {
     //final dio = Dio();
 
     //instanciamos el dio
-    final response = await dio.get('/movie/top_rated', 
+    final response = await dio.get('/movie/top_rated',
         //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
         queryParameters: {'page': page});
     return _jsonToMovies(response.data);
@@ -161,5 +161,17 @@ class MoviedbDatasource extends MoviesDatasource {
         .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
         .toList();
     return movies;*/
+  }
+
+  @override
+  Future<Movie> getMovieById(String id) async {
+    final response = await dio.get('/movie/$id');
+    if (response.statusCode != 200)
+      throw Exception(
+          'Movie with id: $id not found'); //valido si esque existe el id de la pelicula
+
+    final movieDB = MovieDetails.fromJson(response.data);
+    
+    return movie;
   }
 }
