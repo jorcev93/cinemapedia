@@ -1,8 +1,8 @@
 //el objetivo de este mapper es leer diferentes modelos y crear la entidad o
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/infraestructure/models/moviedb/movie_details.dart';
 import 'package:cinemapedia/infraestructure/models/moviedb/movie_moviedb.dart';
 
-import '../models/moviedb/movie_details.dart';
 
 //para traer los datos de todas las peliculas
 class MovieMapper {

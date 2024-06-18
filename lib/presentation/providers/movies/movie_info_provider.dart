@@ -4,10 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 
 //qui hacemos la implementacion de este provider que es de tipo StateNotifierProvider
-final movieInfoProvider =
-    StateNotifierProvider<MovieMapNotifier, Map<String, Movie>>((ref) {
-  final movieRepository = ref.watch(movieRepositoryProvider);
-  return MovieMapNotifier(getMovie: movieRepository.getMovieById);
+final movieInfoProvider = StateNotifierProvider<MovieMapNotifier, Map<String, Movie>>((ref) {
+  final movieRepository = ref.watch( movieRepositoryProvider );
+  return MovieMapNotifier(getMovie: movieRepository.getMovieById );
 });
 
 //asi quiero que funcione el state de este provider
@@ -22,9 +21,9 @@ final movieInfoProvider =
   }
 */
 
-typedef GetMovieCallback = Future<Movie> Function(String movieId);
+typedef GetMovieCallback = Future<Movie>Function(String movieId);
 
-class MovieMapNotifier extends StateNotifier<Map<String, Movie>> {
+class MovieMapNotifier extends StateNotifier<Map<String,Movie>> {
   final GetMovieCallback getMovie;
 
   //constructor de la clase
@@ -32,10 +31,10 @@ class MovieMapNotifier extends StateNotifier<Map<String, Movie>> {
     required this.getMovie,
   }) : super({});
 
+  //con esto vamos a tener la pelicula en la cache de la memoria
   //qui mandamos a llamar la implementacion que trae la pelicula
   Future<void> loadMovie(String movieId) async {
-    if (state[movieId] != null)return; //si el state tiene una pelicula con ese id entonces ya no voy a regresar nadaprint('realizando una peticion http');
-
+    if (state[movieId] != null) return; //si el state tiene una pelicula con ese id entonces ya no voy a regresar nadaprint('realizando una peticion http')
     final movie = await getMovie(movieId); //caso contrario pedymos la pelicula
     state = {...state, movieId: movie}; //actualizamos el estado
   }

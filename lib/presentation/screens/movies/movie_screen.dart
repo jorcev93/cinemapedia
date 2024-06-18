@@ -9,15 +9,15 @@
 //Esta pantalla va a ser para presentar los datos de una sola pelicula
 
 //el StatefulWidget, me sirve para saber cuando cargo o estoy cargando entre otras cosas, utilizando el inisState
-import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 
 import '../../../domain/entities/movie.dart';
 
 //vamos a cambiar el StatefulWidget por un ConsumerStatefulWidget, para poder teer acceso al scope de de nuestro provider
 class MovieScreen extends ConsumerStatefulWidget {
-  static const name = 'mvie-screen';
+  static const name = 'movie-screen';
   final String movieId;
   const MovieScreen({super.key, required this.movieId});
 
@@ -40,20 +40,53 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
 
   @override
   Widget build(BuildContext context) {
-    //variable para saber si hay la pelicula
     final Movie? movie = ref.watch(movieInfoProvider)[widget.movieId];
-    //validamos si esq existe la pelicula
+    //validamos si es que existe la pelicula
     if (movie == null) {
       return const Scaffold(
-          body: Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-        ),
-      ));
+        body: Center(child: CircularProgressIndicator(strokeWidth: 2)));
     }
     return Scaffold(
-        appBar: AppBar(
-      title: Text('MovieID: ${widget.movieId}'),
-    ));
+      //voy a tulizar el CustomScrollView, por que voy a emplear los slivers
+      body: CustomScrollView(
+        physics: const ClampingScrollPhysics(),//esto es para quitar el efecto rebote que sabe tener en ios
+        slivers: [
+          _CustomSliverAppBar(movie: movie),
+        ],
+      ),
+    );
   }
 }
+
+class _CustomSliverAppBar extends StatelessWidget {
+  final Movie movie;
+  const _CustomSliverAppBar({required this.movie});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size; //con esto se el tamaño del dipositivo
+    //aqui vamos a empezar a construir un appbar perzonalizado
+    return SliverAppBar(
+      backgroundColor: Colors.black,
+      expandedHeight: size.height * 0.7, //aqui estoy diciendo que va a tomar el 70% de la pantalla
+      foregroundColor: Colors.white,
+      flexibleSpace: FlexibleSpaceBar(
+        titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        title: Text(
+          movie.title,
+          style: const TextStyle(fontSize: 20),
+          textAlign: TextAlign.start,
+        ),
+        //el stack me permite colocar widgets unos sobre ottros
+        background: Stack(
+          children: [
+            SizedBox.expand(//el expanded es para que tome todo el espacio posible del padre
+              child: Image.network(movie.posterPath, fit: BoxFit.cover,),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+

@@ -63,6 +63,6 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
     state = [
       ...state,
       ...movies
-    ]; //aqui utilizamos el orerrador expec para que sea
+    ]; //aqui utilizamos el operador expec para que sea mas facil de escribirlo
   }
 }

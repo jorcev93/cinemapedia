@@ -29,9 +29,7 @@ class MoviedbDatasource extends MoviesDatasource {
     //Lo mapeamos y recibimos un listado de movies
     final List<Movie> movies = movieDBResponse.results
         //este where lo utilizo para realizar validaciones, y evitarlas realizar el flutter
-        .where((moviedb) =>
-            moviedb.posterPath !=
-            'no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
+        .where((moviedb) => moviedb.posterPath !='no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
         .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
         .toList();
     return movies;
