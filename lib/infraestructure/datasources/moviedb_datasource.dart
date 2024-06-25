@@ -165,7 +165,7 @@ class MoviedbDatasource extends MoviesDatasource {
   Future<Movie> getMovieById(String id) async {
     final response = await dio.get('/movie/$id');
     if (response.statusCode != 200)throw Exception('Movie with id: $id not found'); //valido si esque existe el id de la pelicula
-    final movieDetails = MovieDetails.fromJson(response.data);//variable que almacena el json
+    final movieDetails = MovieDetails.fromJson(response.data);//variable que almacena el json(que viene desde la carpeta models)
     final Movie movie = MovieMapper.movieDetailsToEntity(movieDetails); //variable tipo movie, para leer el detalle de movie
     return movie;
   }

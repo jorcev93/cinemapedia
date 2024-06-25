@@ -1,4 +1,7 @@
 
+//esta clase basicamente es el mapeo de la respuesta que viene desde movieDB, Y la sacamos,
+//copiando el json de la respuesta http, copiandola y pegandola en quicktype.io
+
 class CreditsResponse {
     CreditsResponse({
         required this.id,

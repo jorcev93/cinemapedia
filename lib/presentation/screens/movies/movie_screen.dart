@@ -9,11 +9,16 @@
 //Esta pantalla va a ser para presentar los datos de una sola pelicula
 
 //el StatefulWidget, me sirve para saber cuando cargo o estoy cargando entre otras cosas, utilizando el inisState
+
+//Nota: los import primero se colocan las importaciones de terceros y luego nuestras importaciones 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
+import 'package:animate_do/animate_do.dart';
 
 import '../../../domain/entities/movie.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
+
 
 //vamos a cambiar el StatefulWidget por un ConsumerStatefulWidget, para poder teer acceso al scope de de nuestro provider
 class MovieScreen extends ConsumerStatefulWidget {
@@ -35,6 +40,8 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     super.initState();
     //esto realiza la peticion http, para traer los datos de la peli por el id
     ref.read(movieInfoProvider.notifier).loadMovie(widget
+        .movieId); //se utiliza widget antes de movieID, por qe estamos dentro del initstate
+    ref.read(actorsByMovieProvider.notifier).loadActors(widget
         .movieId); //se utiliza widget antes de movieID, por qe estamos dentro del initstate
   }
 
@@ -79,11 +86,11 @@ class _CustomSliverAppBar extends StatelessWidget {
       foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        title: Text(
+        /* title: Text(
           movie.title,
           style: const TextStyle(fontSize: 20),
           textAlign: TextAlign.start,
-        ),
+        ), */
         //el stack me permite colocar widgets unos sobre ottros
         background: Stack(
           children: [
@@ -92,8 +99,48 @@ class _CustomSliverAppBar extends StatelessWidget {
               child: Image.network(
                 movie.posterPath,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress != null) return const SizedBox();
+                  return FadeIn(child: child);
+                },
               ),
-            )
+            ),
+
+            //degradado para la imagen del poster
+            const SizedBox.expand(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    //aqui defino la posicion del gradiente, en este caso es de abajo hacia arriba
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.7, 1.0],//aqui defino donde empieza que seria en el 70% de la pantalla y luego llega hasta el 10%
+                    colors: [
+                      Colors.transparent,
+                      Colors.black87
+                    ]
+                  )
+                )
+              ),
+            ),
+
+            //gradiente para la flecha
+            //el .expand es para que tome todo el espacio posible
+            const SizedBox.expand(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  //este es 
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    stops: [0.0, 0.3],
+                    colors: [
+                      Colors.black87,
+                      Colors.transparent,
+                    ]
+                  )
+                )
+              ),
+            ),
           ],
         ),
       ),
@@ -110,14 +157,12 @@ class _MovieDetails extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final textStyles = Theme.of(context).textTheme;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,//va a estar alineado al inicio
+      crossAxisAlignment:
+          CrossAxisAlignment.start, //va a estar alineado al inicio
       children: [
-         Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              
+        Padding(
+            padding: const EdgeInsets.all(8),
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
               // Imagen
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
@@ -127,7 +172,7 @@ class _MovieDetails extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox( width: 10 ),
+              const SizedBox(width: 10),
 
               // Descripción
               SizedBox(
@@ -135,34 +180,101 @@ class _MovieDetails extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text( movie.title, style: textStyles.titleLarge ),
-                    Text( movie.overview ),
+                    Text(movie.title, style: textStyles.titleLarge),
+                    Text(movie.overview),
                   ],
                 ),
               )
-            ]
-          )
-         ),
+            ])),
 
-          // Generos de la película
+        // Generos de la película
         Padding(
           padding: const EdgeInsets.all(8),
           child: Wrap(
             children: [
               ...movie.genreIds.map((gender) => Container(
-                margin: const EdgeInsets.only( right: 10),
-                child: Chip(
-                  label: Text( gender ),
-                  shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(20)),
-                ),
-              ))
+                    margin: const EdgeInsets.only(right: 10),
+                    child: Chip(
+                      label: Text(gender),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20)),
+                    ),
+                  ))
             ],
           ),
         ),
-        
-         const SizedBox(height: 100,)
-      ],
 
+        //Mostrar actores ListView
+
+        _ActorsByMovie(movieId: movie.id.toString()),
+        const SizedBox(
+          height: 50,
+        )
+      ],
+    );
+  }
+}
+
+class _ActorsByMovie extends ConsumerWidget {
+  final String movieId;
+
+  const _ActorsByMovie({required this.movieId});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final actorsByMovie = ref.watch(actorsByMovieProvider);
+
+    if (actorsByMovie[movieId] == null) {
+      return const CircularProgressIndicator(strokeWidth: 2);
+    }
+    final actors = actorsByMovie[movieId]!;
+
+    return SizedBox(
+      height: 300,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: actors.length,
+        itemBuilder: (context, index) {
+          final actor = actors[index];
+
+          return Container(
+            padding: const EdgeInsets.all(8.0),
+            width: 135,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Actor Photo
+                FadeInRight(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(
+                      actor.profilePath,
+                      height: 180,
+                      width: 135,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+
+                // Nombre
+                const SizedBox(
+                  height: 5,
+                ),
+
+                Text(actor.name, maxLines: 2),
+                Text(
+                  actor.character ?? '',
+                  maxLines: 2,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      overflow: TextOverflow
+                          .ellipsis), //el TextOverflow.ellipsis, hace que si hay mcho texto aparescan puntitos seguidos
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
