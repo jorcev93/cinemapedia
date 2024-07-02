@@ -27,7 +27,8 @@ class MovieMapper {
       posterPath: (moviedb.posterPath != '')
         ? 'https://image.tmdb.org/t/p/w500${ moviedb.posterPath }'
         : 'no-poster',//si es que intento leer el caso cotrario de esta condicion va a saltar un error, por que eso no se va a oder mostrar en un widget, para eso en el data source se utiliza el where para evitar hacer validaciones en flutter
-      releaseDate: moviedb.releaseDate,
+      //como modifique valide la fecha en el moviedb en la carpeta models aqui tmbien tengo que validar
+      releaseDate: moviedb.releaseDate!=null ? moviedb.releaseDate!:DateTime.now(),
       title: moviedb.title,
       video: moviedb.video,
       voteAverage: moviedb.voteAverage,

@@ -1,12 +1,16 @@
 //este appbar lo voy a colocar en esta carpeta share por que ees algo gueneral n o es propio de una pantalla
 
 import 'package:cinemapedia/presentation/delegate/search_movie_delegate.dart';
-import 'package:flutter/material.dart';
 
-class CustomAppbar extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../providers/providers.dart';
+
+class CustomAppbar extends ConsumerWidget {
   const CustomAppbar({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors =
         Theme.of(context).colorScheme; //esto es para definir el color del tema
     final titleStyle = Theme.of(context)
@@ -32,11 +36,15 @@ class CustomAppbar extends StatelessWidget {
             //boton de busqueda
             IconButton(
                 onPressed: () {
+                  final movieRepository =ref.read(movieRepositoryProvider);
                   //aqui ytiizamos una funcion propia de flutter para las busquedas
                   showSearch(
                     context: context, 
                     //el delegate es el que se va a encargar de realizar la busqueda
-                    delegate: SearchMovieDelegate());
+                    delegate: SearchMovieDelegate(
+                      searchMovies: movieRepository.searchMovies
+                    )
+                    );
                 },
                 icon: const Icon(Icons.search))
           ],
