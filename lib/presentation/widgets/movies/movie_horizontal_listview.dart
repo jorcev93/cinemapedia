@@ -9,8 +9,8 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../config/helpers/human_formats.dart';
-import '../../../../domain/entities/movie.dart';
+import '../../../config/helpers/human_formats.dart';
+import '../../../domain/entities/movie.dart';
 
 //para pode utilizar el listener tengo que cabiar el StatelessWidget a un StatefulWidget
 class MovieHorizontalListview extends StatefulWidget {

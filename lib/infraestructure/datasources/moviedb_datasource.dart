@@ -169,4 +169,13 @@ class MoviedbDatasource extends MoviesDatasource {
     final Movie movie = MovieMapper.movieDetailsToEntity(movieDetails); //variable tipo movie, para leer el detalle de movie
     return movie;
   }
+  
+  @override
+  Future<List<Movie>> searchMovies(String query) async {
+     //instanciamos el dio
+    final response = await dio.get('/search/movie',
+        //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
+        queryParameters: {'query': query});
+    return _jsonToMovies(response.data);
+  }
 }
