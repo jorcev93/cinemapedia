@@ -31,20 +31,18 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   }
 
   //Creamos un nuevo metodo para emitir el nuevo resultado de las peliculas
-  void _onQuerChange(String query) {
+  void _onQueryChanged(String query) {
     //print('Query string cambiando');
-    if (_debounceTimer?.isActive ?? false)
-      _debounceTimer!
-          .cancel(); //si _debounceTimer esta activo va a ser false, pero si es activo lo voy a limpiar
+    if (_debounceTimer?.isActive ?? false)_debounceTimer!.cancel(); //si _debounceTimer esta activo va a ser false, pero si es activo lo voy a limpiar
     //aqui defino el timepo que voy a esperar antes de emitir otro valor, cada ves que la persona deja de escribir
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
       //esto lo pongo aqui y no al inicio, por que yo quiero conservar en pantalla los resultados hasta que la ersona deje de escribir
       //TODO buscar peliculas y emitir al stream
-      if (query.isEmpty) {
+      /*if (query.isEmpty) {
         //aqui valido si esq el query esta vacio solo regurese una lista de peliculas vacias
         debouncedMovies.add([]);
         return;
-      }
+      }*/
       //si ya tenemos un query qe no esta vacio entonces se hace lo siguiente
       final movies = await searchMovies(
           query); //con esto obtengo las peliculas utilizando el searchMovies
@@ -101,7 +99,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   //esto es para que los resultados aparezcan cuando la persona esta escribiendo
   @override
   Widget buildSuggestions(BuildContext context) {
-    _onQuerChange(query);
+    _onQueryChanged(query);
     //aqui lo vamos a cambiar el FutureBuilder por un StreamBuilder
     return StreamBuilder(
         //future: searchMovies(query),//al ya no utilizar el future lo vamos a cambiar por un stream
