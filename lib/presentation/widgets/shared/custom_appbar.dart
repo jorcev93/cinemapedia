@@ -39,18 +39,24 @@ class CustomAppbar extends ConsumerWidget {
             IconButton(
                 onPressed: () {
                   final movieRepository = ref.read(movieRepositoryProvider);
+                  final searchQuery = ref.read(serachQueryProvider);
                   //aqui ytiizamos una funcion propia de flutter para las busquedas
                   //decimos qu eva a recibir una pelicula pero esta es o
                   showSearch<Movie?>(
-                          context: context,
-                          //el delegate es el que se va a encargar de realizar la busqueda
-                          delegate: SearchMovieDelegate(
-                              searchMovies: movieRepository.searchMovies))
-                      .then((movie) {
+                      query: searchQuery,
+                      context: context,
+                      //el delegate es el que se va a encargar de realizar la busqueda
+                      delegate: SearchMovieDelegate(searchMovies: (query) {
+                        ref
+                            .read(serachQueryProvider.notifier)
+                            .update((state) => query);
+                        return movieRepository.searchMovies(query);
+                      })).then((movie) {
                     //con esto hago que al cerrar el search, al cerrarce almacene el id de la pelicula selecionada
                     if (movie == null) return;
                     //me envia a la pagina de la pelicula selecionada
-                     context.push('/movie/${ movie.id }'); //con esto voy a tmar el valor del contexto cuando se llame a la funcion
+                    context.push(
+                        '/movie/${movie.id}'); //con esto voy a tmar el valor del contexto cuando se llame a la funcion
                   });
                 },
                 icon: const Icon(Icons.search))
