@@ -19,6 +19,8 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // StreamController debounceMovies = StreamnController();//si se lo deja asi solo va a escuchar un listener, por eso no conviene
   StreamController<List<Movie>> debouncedMovies = StreamController
       .broadcast(); //asi se escucha una lista de listeners de varios lugares
+  StreamController<bool> isLoadingStream = StreamController
+      .broadcast(); //este es para el icono de carga al momendo de buscar
 
   SearchMovieDelegate(
       {required this.searchMovies, required this.initialMovies});
@@ -33,6 +35,8 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   //Creamos un nuevo metodo para emitir el nuevo resultado de las peliculas
   void _onQueryChanged(String query) {
+    isLoadingStream
+        .add(true); //esto es para saber si la persona ya empezo a escribir
     //print('Query string cambiando');
     if (_debounceTimer?.isActive ?? false)
       _debounceTimer!
@@ -52,6 +56,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       initialMovies =
           movies; //este va a tener las mismas peliculas que nosotros tenemos siempre
       debouncedMovies.add(movies); //aqui añado las peliculas
+      isLoadingStream.add(false); //aqui lo detengo, por que la persona ya dejo de escribir
     });
     //print('Buscando peliculas');
   }
@@ -64,21 +69,38 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
-      //validamos si es que el cuadro de busqueda esta vacio o lleno
-      //si esque esta vacio no va a aparecer el icono "X", para borrar lo que estabamos escribiendo
-      //if (query.isEmpty) esta validacion la puedo ahcer directamente desde FadeIn con esta linea "animate: query.isEmpty"
-      FadeIn(
-        animate: query
-            .isNotEmpty, //valido si esque el cuadro de busqueda esta vacio o no
-        duration: const Duration(
-            milliseconds:
-                200), //determino el timpeo de espera para que aparezca el boton de borrar
-        child: IconButton(
-            //el query, es una palabra reservada del SearchDelegate
-            //lo que estoy haciendo aqui es un icono con una "x", para borrar el texto que estoy escribiendo en el cuadro de busqueda
-            onPressed: () => query = '',
-            icon: const Icon(Icons.clear_rounded)),
-      )
+      StreamBuilder(
+        initialData: false,
+        stream: isLoadingStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data ?? false) {
+            return SpinPerfect(
+              duration: const Duration(seconds: 20),
+              spins: 10,
+              infinite: true,
+              child: IconButton(
+                  onPressed: () => query = '',
+                  icon: const Icon(Icons.refresh_rounded)),
+            );
+          }
+
+          //validamos si es que el cuadro de busqueda esta vacio o lleno
+          //si esque esta vacio no va a aparecer el icono "X", para borrar lo que estabamos escribiendo
+          //if (query.isEmpty) esta validacion la puedo ahcer directamente desde FadeIn con esta linea "animate: query.isEmpty"
+          return FadeIn(
+            animate: query
+                .isNotEmpty, //valido si esque el cuadro de busqueda esta vacio o no
+            duration: const Duration(
+                milliseconds:
+                    200), //determino el timpeo de espera para que aparezca el boton de borrar
+            child: IconButton(
+                //el query, es una palabra reservada del SearchDelegate
+                //lo que estoy haciendo aqui es un icono con una "x", para borrar el texto que estoy escribiendo en el cuadro de busqueda
+                onPressed: () => query = '',
+                icon: const Icon(Icons.clear_rounded)),
+          );
+        },
+      ),
     ];
   }
 
@@ -96,7 +118,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   }
 
   Widget buildResultsAndSuggestions() {
-     return StreamBuilder(
+    return StreamBuilder(
         stream: debouncedMovies.stream,
         builder: (context, snapshot) {
           final movies = snapshot.data ?? [];
@@ -135,7 +157,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   @override
   Widget buildSuggestions(BuildContext context) {
     _onQueryChanged(query);
-   return buildResultsAndSuggestions();
+    return buildResultsAndSuggestions();
   }
 }
 
