@@ -38,20 +38,16 @@ class CustomAppbar extends ConsumerWidget {
             //boton de busqueda
             IconButton(
                 onPressed: () {
-                  final movieRepository = ref.read(movieRepositoryProvider);
-                  final searchQuery = ref.read(serachQueryProvider);
+                  //final searchedMovies = ref.read(searchedMoviesProvider);
+                  final searchQuery = ref.read(searchQueryProvider);
                   //aqui ytiizamos una funcion propia de flutter para las busquedas
                   //decimos qu eva a recibir una pelicula pero esta es o
                   showSearch<Movie?>(
                       query: searchQuery,
                       context: context,
                       //el delegate es el que se va a encargar de realizar la busqueda
-                      delegate: SearchMovieDelegate(searchMovies: (query) {
-                        ref
-                            .read(serachQueryProvider.notifier)
-                            .update((state) => query);
-                        return movieRepository.searchMovies(query);
-                      })).then((movie) {
+                      delegate: SearchMovieDelegate
+                      (searchMovies: ref.read(searchedMoviesProvider.notifier).searchMoviesByQuery)).then((movie) {
                     //con esto hago que al cerrar el search, al cerrarce almacene el id de la pelicula selecionada
                     if (movie == null) return;
                     //me envia a la pagina de la pelicula selecionada
