@@ -21,6 +21,13 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   SearchMovieDelegate({required this.searchMovies});
   Timer? _debounceTimer; //esto me permite determinar un periodo de tiempo
 
+  //metodo para cerrar los streams
+  //lo voy a mandar a llamar cuando ya no vaya a utilizar el delegate
+  //por eso lo voy a utilizar en el buildLeading
+  void clearStreams() {
+    debouncedMovies.close();
+  }
+
   //Creamos un nuevo metodo para emitir el nuevo resultado de las peliculas
   void _onQuerChange(String query) {
     //print('Query string cambiando');
@@ -28,10 +35,20 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       _debounceTimer!
           .cancel(); //si _debounceTimer esta activo va a ser false, pero si es activo lo voy a limpiar
     //aqui defino el timepo que voy a esperar antes de emitir otro valor, cada ves que la persona deja de escribir
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {});
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      //esto lo pongo aqui y no al inicio, por que yo quiero conservar en pantalla los resultados hasta que la ersona deje de escribir
+      //TODO buscar peliculas y emitir al stream
+      if (query.isEmpty) {
+        //aqui valido si esq el query esta vacio solo regurese una lista de peliculas vacias
+        debouncedMovies.add([]);
+        return;
+      }
+      //si ya tenemos un query qe no esta vacio entonces se hace lo siguiente
+      final movies = await searchMovies(
+          query); //con esto obtengo las peliculas utilizando el searchMovies
+      debouncedMovies.add(movies); //aqui añado las peliculas
+    });
     //print('Buscando peliculas');
-
-    //TODO buscar peliculas y emitir al stream
   }
 
   //este override no es obligatorio,vsolo es para cambiar el texto "Search" por "Buscar película", en el cuadro de busqueda
@@ -66,7 +83,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   Widget? buildLeading(BuildContext context) {
     return IconButton(
         //si esque no encontro lo que buscaba o si solo quiere regresar, regreso null
-        onPressed: () => close(context, null),
+        onPressed: () {
+          clearStreams();
+          close(context, null);
+        },
         icon: const Icon(Icons.arrow_back_ios_new_rounded));
   }
 
@@ -90,7 +110,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
             itemCount: movies.length,
             itemBuilder: (context, index) => _MovieItem(
               movie: movies[index],
-              onMovieSelected: close,
+              onMovieSelected: (context, movie) {
+                clearStreams();
+                close(context, movie);
+              },
             ),
             //se puede dejar asi
             /*
