@@ -12,7 +12,8 @@ typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 //para ello me ubico sobre el nombre de la calse y tecleo "ctrl + .", para que se me sobre escriban los metodos
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMoviesCallback searchMovies;
-  final List<Movie> initialMovies;
+  List<Movie>
+      initialMovies; //quite el final para que el valor pueda cambiar y asi poder utilizarlo con el boton de buscar del teclado
   //NOTA: SI SABEMOS QUE SOLO VA A ESCUCHAR UN WIDGET LO PONEMOS DEJAR ASI, PERO SI NO SABEMOS ES
   //RECOMENDABLE UTILIZAR EL .broadcast()
   // StreamController debounceMovies = StreamnController();//si se lo deja asi solo va a escuchar un listener, por eso no conviene
@@ -33,7 +34,9 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   //Creamos un nuevo metodo para emitir el nuevo resultado de las peliculas
   void _onQueryChanged(String query) {
     //print('Query string cambiando');
-    if (_debounceTimer?.isActive ?? false)_debounceTimer!.cancel(); //si _debounceTimer esta activo va a ser false, pero si es activo lo voy a limpiar
+    if (_debounceTimer?.isActive ?? false)
+      _debounceTimer!
+          .cancel(); //si _debounceTimer esta activo va a ser false, pero si es activo lo voy a limpiar
     //aqui defino el timepo que voy a esperar antes de emitir otro valor, cada ves que la persona deja de escribir
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
       //esto lo pongo aqui y no al inicio, por que yo quiero conservar en pantalla los resultados hasta que la ersona deje de escribir
@@ -46,6 +49,8 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       //si ya tenemos un query qe no esta vacio entonces se hace lo siguiente
       final movies = await searchMovies(
           query); //con esto obtengo las peliculas utilizando el searchMovies
+      initialMovies =
+          movies; //este va a tener las mismas peliculas que nosotros tenemos siempre
       debouncedMovies.add(movies); //aqui añado las peliculas
     });
     //print('Buscando peliculas');
@@ -90,20 +95,8 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
         icon: const Icon(Icons.arrow_back_ios_new_rounded));
   }
 
-  //esto es para los resultados que van a aparecer cuando la persona presione enter
-  @override
-  Widget buildResults(BuildContext context) {
-    return const Text('buildResults');
-  }
-
-  //esto es para que los resultados aparezcan cuando la persona esta escribiendo
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    _onQueryChanged(query);
-    //aqui lo vamos a cambiar el FutureBuilder por un StreamBuilder
-    return StreamBuilder(
-        //future: searchMovies(query),//al ya no utilizar el future lo vamos a cambiar por un stream
-        initialData: initialMovies,
+  Widget buildResultsAndSuggestions() {
+     return StreamBuilder(
         stream: debouncedMovies.stream,
         builder: (context, snapshot) {
           final movies = snapshot.data ?? [];
@@ -130,6 +123,19 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
             },*/
           );
         });
+  }
+
+  //esto es para los resultados que van a aparecer cuando la persona presione enter
+  @override
+  Widget buildResults(BuildContext context) {
+    return buildResultsAndSuggestions();
+  }
+
+  //esto es para que los resultados aparezcan cuando la persona esta escribiendo
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    _onQueryChanged(query);
+   return buildResultsAndSuggestions();
   }
 }
 
