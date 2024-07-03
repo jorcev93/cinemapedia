@@ -29,7 +29,9 @@ class MoviedbDatasource extends MoviesDatasource {
     //Lo mapeamos y recibimos un listado de movies
     final List<Movie> movies = movieDBResponse.results
         //este where lo utilizo para realizar validaciones, y evitarlas realizar el flutter
-        .where((moviedb) => moviedb.posterPath !='no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
+        .where((moviedb) =>
+            moviedb.posterPath !=
+            'no-poster') //aqui valido si esque es diferente de 'no poster', va a pasar caso contrario no va a mostrar nada
         .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
         .toList();
     return movies;
@@ -164,15 +166,21 @@ class MoviedbDatasource extends MoviesDatasource {
   @override
   Future<Movie> getMovieById(String id) async {
     final response = await dio.get('/movie/$id');
-    if (response.statusCode != 200)throw Exception('Movie with id: $id not found'); //valido si esque existe el id de la pelicula
-    final movieDetails = MovieDetails.fromJson(response.data);//variable que almacena el json(que viene desde la carpeta models)
-    final Movie movie = MovieMapper.movieDetailsToEntity(movieDetails); //variable tipo movie, para leer el detalle de movie
+    if (response.statusCode != 200)
+      throw Exception(
+          'Movie with id: $id not found'); //valido si esque existe el id de la pelicula
+    final movieDetails = MovieDetails.fromJson(response
+        .data); //variable que almacena el json(que viene desde la carpeta models)
+    final Movie movie = MovieMapper.movieDetailsToEntity(
+        movieDetails); //variable tipo movie, para leer el detalle de movie
     return movie;
   }
-  
+
   @override
   Future<List<Movie>> searchMovies(String query) async {
-     //instanciamos el dio
+    //validamos si esqu el query esta vacio
+    if (query.isEmpty) return [];//si esta vacio regresamos un arreglo vacio
+    //instanciamos el dio
     final response = await dio.get('/search/movie',
         //este queryParameters, hago que la pagina vaya cambiando(es decir que se muestren nuevas peliculas cuando llegue al final en sroll horizontal)
         queryParameters: {'query': query});

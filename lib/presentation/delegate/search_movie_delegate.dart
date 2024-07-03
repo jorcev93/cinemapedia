@@ -12,13 +12,15 @@ typedef SearchMoviesCallback = Future<List<Movie>> Function(String query);
 //para ello me ubico sobre el nombre de la calse y tecleo "ctrl + .", para que se me sobre escriban los metodos
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearchMoviesCallback searchMovies;
+  final List<Movie> initialMovies;
   //NOTA: SI SABEMOS QUE SOLO VA A ESCUCHAR UN WIDGET LO PONEMOS DEJAR ASI, PERO SI NO SABEMOS ES
   //RECOMENDABLE UTILIZAR EL .broadcast()
   // StreamController debounceMovies = StreamnController();//si se lo deja asi solo va a escuchar un listener, por eso no conviene
   StreamController<List<Movie>> debouncedMovies = StreamController
       .broadcast(); //asi se escucha una lista de listeners de varios lugares
 
-  SearchMovieDelegate({required this.searchMovies});
+  SearchMovieDelegate(
+      {required this.searchMovies, required this.initialMovies});
   Timer? _debounceTimer; //esto me permite determinar un periodo de tiempo
 
   //metodo para cerrar los streams
@@ -103,6 +105,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     //aqui lo vamos a cambiar el FutureBuilder por un StreamBuilder
     return StreamBuilder(
         //future: searchMovies(query),//al ya no utilizar el future lo vamos a cambiar por un stream
+        initialData: initialMovies,
         stream: debouncedMovies.stream,
         builder: (context, snapshot) {
           final movies = snapshot.data ?? [];
