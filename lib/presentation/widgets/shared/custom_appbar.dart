@@ -4,7 +4,9 @@ import 'package:cinemapedia/presentation/delegate/search_movie_delegate.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../domain/entities/movie.dart';
 import '../../providers/providers.dart';
 
 class CustomAppbar extends ConsumerWidget {
@@ -36,15 +38,20 @@ class CustomAppbar extends ConsumerWidget {
             //boton de busqueda
             IconButton(
                 onPressed: () {
-                  final movieRepository =ref.read(movieRepositoryProvider);
+                  final movieRepository = ref.read(movieRepositoryProvider);
                   //aqui ytiizamos una funcion propia de flutter para las busquedas
-                  showSearch(
-                    context: context, 
-                    //el delegate es el que se va a encargar de realizar la busqueda
-                    delegate: SearchMovieDelegate(
-                      searchMovies: movieRepository.searchMovies
-                    )
-                    );
+                  //decimos qu eva a recibir una pelicula pero esta es o
+                  showSearch<Movie?>(
+                          context: context,
+                          //el delegate es el que se va a encargar de realizar la busqueda
+                          delegate: SearchMovieDelegate(
+                              searchMovies: movieRepository.searchMovies))
+                      .then((movie) {
+                    //con esto hago que al cerrar el search, al cerrarce almacene el id de la pelicula selecionada
+                    if (movie == null) return;
+                    //me envia a la pagina de la pelicula selecionada
+                     context.push('/movie/${ movie.id }'); //con esto voy a tmar el valor del contexto cuando se llame a la funcion
+                  });
                 },
                 icon: const Icon(Icons.search))
           ],
