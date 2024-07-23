@@ -1,5 +1,7 @@
 //voy a utilizar gorouter y para ello hay que instalarlo
 //para instalarlo utilizo pubspec y tecleo el comando go_router
+import 'package:cinemapedia/presentation/views/home_views/favorites_view.dart';
+import 'package:cinemapedia/presentation/views/views.dart';
 import 'package:go_router/go_router.dart';
 import '../../presentation/screens/screens.dart';
 //aqui va la configuracion de rutas
@@ -9,7 +11,7 @@ final appRouter = GoRouter(
       GoRoute(
           path: '/',
           name: HomeScreen.name,
-          builder: (context, state) => const HomeScreen(),
+          builder: (context, state) => const HomeScreen(childView: HomeView(),),
           //qui van a ir las rutas hijas
           routes: [
             GoRoute(
