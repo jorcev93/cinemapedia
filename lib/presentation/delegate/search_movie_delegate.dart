@@ -38,9 +38,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     isLoadingStream
         .add(true); //esto es para saber si la persona ya empezo a escribir
     //print('Query string cambiando');
-    if (_debounceTimer?.isActive ?? false)
+    if (_debounceTimer?.isActive ?? false) {
       _debounceTimer!
           .cancel(); //si _debounceTimer esta activo va a ser false, pero si es activo lo voy a limpiar
+    }
     //aqui defino el timepo que voy a esperar antes de emitir otro valor, cada ves que la persona deja de escribir
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
       //esto lo pongo aqui y no al inicio, por que yo quiero conservar en pantalla los resultados hasta que la ersona deje de escribir
