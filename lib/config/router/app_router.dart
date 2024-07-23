@@ -2,19 +2,24 @@
 //para instalarlo utilizo pubspec y tecleo el comando go_router
 import 'package:go_router/go_router.dart';
 import '../../presentation/screens/screens.dart';
+
 //aqui va la configuracion de rutas
 final appRouter = GoRouter(
-    initialLocation: '/', //
+    initialLocation: '/home/0', //
     routes: [
       GoRoute(
-          path: '/',
+          path: '/home:page',
           name: HomeScreen.name,
-          builder: (context, state) => const HomeScreen(),
+          builder: (context, state) {
+            final pageIndex = state.pathParameters['page'] ?? '0';
+            return HomeScreen(pageIndex: int.parse(pageIndex));
+          },
           //qui van a ir las rutas hijas
           routes: [
             GoRoute(
-              //como es una ruta hija, ya no va el primer "/", pasaria de esto "'/movie/:id'" a esto "'movie/:id'"
-                path:'movie/:id', //aqui estoy diciendo que va a recibir un id, y este siempre va aser un strig
+                //como es una ruta hija, ya no va el primer "/", pasaria de esto "'/movie/:id'" a esto "'movie/:id'"
+                path:
+                    'movie/:id', //aqui estoy diciendo que va a recibir un id, y este siempre va aser un strig
                 name: MovieScreen.name,
                 builder: (context, state) {
                   //esta variable es para obtener el parametro del id que viene en el path
