@@ -10,7 +10,7 @@
 
 //el StatefulWidget, me sirve para saber cuando cargo o estoy cargando entre otras cosas, utilizando el inisState
 
-//Nota: los import primero se colocan las importaciones de terceros y luego nuestras importaciones 
+//Nota: los import primero se colocan las importaciones de terceros y luego nuestras importaciones
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
@@ -18,7 +18,6 @@ import 'package:animate_do/animate_do.dart';
 import '../../../domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
-
 
 //vamos a cambiar el StatefulWidget por un ConsumerStatefulWidget, para poder teer acceso al scope de de nuestro provider
 class MovieScreen extends ConsumerStatefulWidget {
@@ -84,6 +83,15 @@ class _CustomSliverAppBar extends StatelessWidget {
       expandedHeight: size.height *
           0.7, //aqui estoy diciendo que va a tomar el 70% de la pantalla
       foregroundColor: Colors.white,
+      actions: [
+        IconButton(
+            onPressed: () {
+              //TODO realizar el toggle
+            },
+            icon: Icon(Icons.favorite_border)
+            //icon: Icon(Icons.favorite_rounded, color: Colors.red,),
+            )
+      ],
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         /* title: Text(
@@ -106,41 +114,93 @@ class _CustomSliverAppBar extends StatelessWidget {
               ),
             ),
 
-            //degradado para la imagen del poster
-            const SizedBox.expand(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    //aqui defino la posicion del gradiente, en este caso es de abajo hacia arriba
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.7, 1.0],//aqui defino donde empieza que seria en el 70% de la pantalla y luego llega hasta el 10%
-                    colors: [
-                      Colors.transparent,
-                      Colors.black87
-                    ]
-                  )
-                )
-              ),
-            ),
 
-            //gradiente para la flecha
-            //el .expand es para que tome todo el espacio posible
+
+            /*Gradiente para favoritos */
+            //gradiente utilizando codigo reutilizable
+            const _CustomGradient(
+              begin: Alignment.topRight, 
+              end: Alignment.bottomLeft, 
+              stops: [0.0,0.2], 
+              colors: [Colors.black54,  Colors.transparent]
+              ),
+
+
+
+            //sin reutilizar codigo
+            /*
             const SizedBox.expand(
               child: DecoratedBox(
-                decoration: BoxDecoration(
-                  //este es 
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    stops: [0.0, 0.3],
-                    colors: [
-                      Colors.black87,
-                      Colors.transparent,
-                    ]
-                  )
-                )
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          //aqui defino la posicion del gradiente, en este caso es de abajo hacia arriba
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                          stops: [
+                    0.0,
+                    0.2
+                  ], //aqui defino donde empieza que seria en el 70% de la pantalla y luego llega hasta el 10%
+                          colors: [
+                    Colors.black54,
+                    Colors.transparent
+                  ]))),
+            ),*/
+
+
+
+            /*Gradiente para la imagen del poster */
+            //gradiente utilizando codigo reutilizable
+            const _CustomGradient(
+              begin: Alignment.topCenter, 
+              end: Alignment.bottomCenter, 
+              stops: [0.8,1.0], 
+              colors: [Colors.transparent,  Colors.black54]
               ),
-            ),
+            
+            //sin codigo reutilizable
+            /*const SizedBox.expand(
+              child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          //aqui defino la posicion del gradiente, en este caso es de abajo hacia arriba
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          stops: [
+                    0.7,
+                    1.0
+                  ], //aqui defino donde empieza que seria en el 70% de la pantalla y luego llega hasta el 10%
+                          colors: [
+                    Colors.transparent,
+                    Colors.black87
+                  ]))),
+            ),*/
+
+
+            /*Gradiante para la flecha */
+            //con codigo reutilizable
+            //gradiente utilizando codigo reutilizable
+            const _CustomGradient(
+              begin: Alignment.topRight, 
+              end: Alignment.bottomLeft, 
+              stops: [0.0,0.3], 
+              colors: [Colors.black87,  Colors.transparent]
+              ),
+
+            //sin codigo reutilizable
+            /*
+            const SizedBox.expand(
+              child: DecoratedBox(
+                  decoration: BoxDecoration(
+                      //este es
+                      gradient:
+                          LinearGradient(begin: Alignment.topLeft, stops: [
+                0.0,
+                0.3
+              ], colors: [
+                Colors.black87,
+                Colors.transparent,
+              ]))),
+            ),*/
           ],
         ),
       ),
@@ -275,6 +335,32 @@ class _ActorsByMovie extends ConsumerWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class _CustomGradient extends StatelessWidget {
+  final AlignmentGeometry begin;
+  final AlignmentGeometry end;
+  final List<double> stops;
+  final List<Color> colors;
+
+  const _CustomGradient(
+      {this.begin = Alignment.centerLeft,
+      this.end = Alignment.centerRight,
+      required this.stops,
+      required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: DecoratedBox(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: begin, 
+                  end: end, 
+                  stops: stops, 
+                  colors: colors))),
     );
   }
 }
