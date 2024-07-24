@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
         children: viewRoutes,
       ),
       bottomNavigationBar:
-          CustomBottomNavigation(), //mandamos a llamar el menu de navegacion que se muestra en la parte inferior
+          CustomBottomNavigation(currentIndex:pageIndex), //mandamos a llamar el menu de navegacion que se muestra en la parte inferior
       /*esto era una prueba, para ver como utilizar las variables de entornno
       body: Center(
         //child: Text(dotenv.env['THE_MOVIEDB_KEY']??'No hay api key'),//asi seria si no utilizo una clase a parte

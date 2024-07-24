@@ -1,13 +1,34 @@
 //este es el menu de navegacion que se mueestra en la parte inferior de la pantalla
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomBottomNavigation extends StatelessWidget {
-  const CustomBottomNavigation({super.key});
+  final int currentIndex;
+  const CustomBottomNavigation({super.key, required this.currentIndex});
+
+
+  //metodo para saber el indice del tab al cual quiero navegar
+  void onItemTapped(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        context.go('/home/0');
+        break;
+      case 1:
+        context.go('/home/1');
+        break;
+      case 2:
+        context.go('/home/2');
+        break;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       elevation: 0, //aqui definimos el menu de navegacion
+      currentIndex: currentIndex,
+      onTap: (value) => onItemTapped(context, value),
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home_max), label: 'Inicio'),
         BottomNavigationBarItem(

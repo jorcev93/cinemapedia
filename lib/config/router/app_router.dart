@@ -8,7 +8,7 @@ final appRouter = GoRouter(
     initialLocation: '/home/0', //
     routes: [
       GoRoute(
-          path: '/home:page',
+          path: '/home/:page',
           name: HomeScreen.name,
           builder: (context, state) {
             final pageIndex = state.pathParameters['page'] ?? '0';
@@ -27,6 +27,11 @@ final appRouter = GoRouter(
                   return MovieScreen(movieId: movieId);
                 })
           ]),
+
+          //se utiliza un "_", cuando a fuerza se tiene que enviar un argumento pero este no es necesario
+          GoRoute(
+            path: '/',
+          redirect: (_, __)=>'/home/0'),
 
       //si lo dejo aqui en el momento que se recarga la pagina, se va a perder
       //el boton de regreso, para ello es mejor ubicarlo dentro de la ruta de  "HomeScreen"

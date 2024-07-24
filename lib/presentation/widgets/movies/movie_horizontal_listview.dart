@@ -154,7 +154,7 @@ class _Slide extends StatelessWidget {
                   }
                   return GestureDetector(
                     //se utiliza push por que quiero que se pueda regresar a la pantalla anterior
-                    onTap: () => context.push('/movie/${movie.id}'), 
+                    onTap: () => context.push('/home/0/movie/${movie.id}'), 
                     //este FadeIn, es un metodo del paquete animate_do, es para la animacion para que las imagenes tengan la misma altura
                     child: FadeIn(child: child),
                   );
