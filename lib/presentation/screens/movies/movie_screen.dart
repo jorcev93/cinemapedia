@@ -17,7 +17,6 @@ import 'package:animate_do/animate_do.dart';
 
 import '../../../domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
-import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
 
 //vamos a cambiar el StatefulWidget por un ConsumerStatefulWidget, para poder teer acceso al scope de de nuestro provider
 class MovieScreen extends ConsumerStatefulWidget {
@@ -69,12 +68,12 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
-class _CustomSliverAppBar extends StatelessWidget {
+class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
   const _CustomSliverAppBar({required this.movie});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size =
         MediaQuery.of(context).size; //con esto se el tamaño del dipositivo
     //aqui vamos a empezar a construir un appbar perzonalizado
@@ -86,7 +85,8 @@ class _CustomSliverAppBar extends StatelessWidget {
       actions: [
         IconButton(
             onPressed: () {
-              //TODO realizar el toggle
+              //realizar el toggle, para eso buscamos el provider
+              ref.watch(localStorageRepositoryProvider).toggleFavorite(movie);
             },
             icon: Icon(Icons.favorite_border)
             //icon: Icon(Icons.favorite_rounded, color: Colors.red,),
@@ -114,18 +114,13 @@ class _CustomSliverAppBar extends StatelessWidget {
               ),
             ),
 
-
-
             /*Gradiente para favoritos */
             //gradiente utilizando codigo reutilizable
             const _CustomGradient(
-              begin: Alignment.topRight, 
-              end: Alignment.bottomLeft, 
-              stops: [0.0,0.2], 
-              colors: [Colors.black54,  Colors.transparent]
-              ),
-
-
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [0.0, 0.2],
+                colors: [Colors.black54, Colors.transparent]),
 
             //sin reutilizar codigo
             /*
@@ -146,17 +141,14 @@ class _CustomSliverAppBar extends StatelessWidget {
                   ]))),
             ),*/
 
-
-
             /*Gradiente para la imagen del poster */
             //gradiente utilizando codigo reutilizable
             const _CustomGradient(
-              begin: Alignment.topCenter, 
-              end: Alignment.bottomCenter, 
-              stops: [0.8,1.0], 
-              colors: [Colors.transparent,  Colors.black54]
-              ),
-            
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.8, 1.0],
+                colors: [Colors.transparent, Colors.black54]),
+
             //sin codigo reutilizable
             /*const SizedBox.expand(
               child: DecoratedBox(
@@ -175,16 +167,14 @@ class _CustomSliverAppBar extends StatelessWidget {
                   ]))),
             ),*/
 
-
             /*Gradiante para la flecha */
             //con codigo reutilizable
             //gradiente utilizando codigo reutilizable
             const _CustomGradient(
-              begin: Alignment.topRight, 
-              end: Alignment.bottomLeft, 
-              stops: [0.0,0.3], 
-              colors: [Colors.black87,  Colors.transparent]
-              ),
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                stops: [0.0, 0.3],
+                colors: [Colors.black87, Colors.transparent]),
 
             //sin codigo reutilizable
             /*
@@ -357,10 +347,7 @@ class _CustomGradient extends StatelessWidget {
       child: DecoratedBox(
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                  begin: begin, 
-                  end: end, 
-                  stops: stops, 
-                  colors: colors))),
+                  begin: begin, end: end, stops: stops, colors: colors))),
     );
   }
 }
