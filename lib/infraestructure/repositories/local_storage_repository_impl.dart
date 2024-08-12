@@ -1,7 +1,6 @@
 import 'package:cinemapedia/domain/datasources/local_storage_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/domain/repositories/local_storage_repository.dart';
-import 'package:flutter/material.dart';
 
 //esta clase va a extender del LocalStorageRepository, que se ubica en cinemapedia/domain/repositories/local_storage_repository.dart'
 //para solucionar el error luego de crear la lase nos ubicamos sobre IsarDatasource, tecleamos "ctrl + ."

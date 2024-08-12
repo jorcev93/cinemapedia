@@ -68,12 +68,20 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
+//va a permitir saber si el corazon de favoritos esta seleccionado o no
+//al utilizar el .famyli estamos el FutureProvider permite tener un valor boleano y un argumento de ualqueir tipo en este caso un int
+final isFavoriteProvider = FutureProvider.family((ref, int movieId) {
+  final localStorageRepository = ref.watch(localStorageRepositoryProvider);
+  return localStorageRepository.isMovieFavorite(movieId);
+});
+
 class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
   const _CustomSliverAppBar({required this.movie});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isFavoiteFuture = ref.watch(isFavoriteProvider(movie.id));
     final size =
         MediaQuery.of(context).size; //con esto se el tamaño del dipositivo
     //aqui vamos a empezar a construir un appbar perzonalizado
@@ -84,13 +92,24 @@ class _CustomSliverAppBar extends ConsumerWidget {
       foregroundColor: Colors.white,
       actions: [
         IconButton(
-            onPressed: () {
-              //realizar el toggle, para eso buscamos el provider
-              ref.watch(localStorageRepositoryProvider).toggleFavorite(movie);
-            },
-            icon: Icon(Icons.favorite_border)
-            //icon: Icon(Icons.favorite_rounded, color: Colors.red,),
-            )
+          onPressed: () async{
+            //realizar el toggle, para eso buscamos el provider
+            ref.watch(localStorageRepositoryProvider).toggleFavorite(movie);
+            ref.invalidate(isFavoriteProvider(movie
+                .id)); //lo invalidadmos para que vuelva a realizr la peticion y asi confirmamos que esta o no dentro de favoritos
+          },
+          icon: isFavoiteFuture.when(
+            loading: () => const CircularProgressIndicator(
+                strokeWidth:
+                    2), //este progress indicator no lo vamos a ver nunca por que el acceso a la db es muy rapido
+            data: (isFavorite) => isFavorite
+                ? const Icon(Icons.favorite_rounded, color: Colors.red)
+                : const Icon(
+                    Icons.favorite_border,
+                  ),
+            error: (_, __) => throw UnimplementedError(),
+          ),
+        )
       ],
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
