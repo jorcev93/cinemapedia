@@ -9,8 +9,14 @@ flutter pub run build_runner build
 A new Flutter project.
 
 # Para producción
-Para cambiar el nombre de la aplicación
+PARA CAMBIAR EL NOMBRE DE LA APP
 ......
+Utilizo el paquete:
+change_app_package_name
+
+Lo instalo como paquete de desarrollo, por que no es necesario para correr la app
+
+Ejecuto en el terminal el comando: 
 dart run change_app_package_name:main com.new.package.name
 
 donde: 
@@ -25,6 +31,29 @@ dart run change_app_package_name:main com.jorcev.cinemapedia
 
 Nota:
 Despues de cambiar el nombre de la app podemos eliminar el paquete si se desea 
+......
 
+PARA CAMBIAR EL ICONO DE LA APP
+......
+Utilizo el paquete:
+flutter_launcher_icons
+
+Lo instalo como paquete de desarrollo, por que no es necesario para correr la app
+
+En el pubspec.yaml agrego:
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+
+Creo el directorio: 
+    assets/icon/
+
+Copio en el directorio el icono que voy a utilizar
+
+Ejecuto el comando en la terminal:
+dart run flutter_launcher_icons
 
 ......
