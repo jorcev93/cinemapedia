@@ -36,7 +36,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp.router(
       //despues del "MaterialAPP", se agrega ".router", para poder utilizar go_router
       routerConfig:
-          appRouter, //referencio a la calse donde tengo las rutas de las pantallas
+          appRouter, //referencio a la clase donde tengo las rutas de las pantallas
       debugShowCheckedModeBanner: false,
       theme: AppTheme().getTheme(), //llamamos al theme que creamos
     );
