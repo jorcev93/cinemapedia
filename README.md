@@ -27,7 +27,7 @@ entonces:
 com.new.package.name, vendria a ser el identificdor de nuestra app
 
 Modificaion al comando para ejecuar en la terminal:
-dart run change_app_package_name:main com.jorcev.cinemapedia
+dart run change_app_package_name:main com.jorcev.infocine
 
 Nota:
 Despues de cambiar el nombre de la app podemos eliminar el paquete si se desea 
