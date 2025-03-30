@@ -1,9 +1,9 @@
 //AQUI PEGAMOS EL CODIGO QUE HICIMOS EN EL ARCHOVO home_screen.dart ubicado en la carpeta "views/home_views"
 //aqui debemos cambiar el statefullwiget de privado a publico quitando el slash que se antepone al nombre
 
-
 //con este _HomeView lo que pretendo es que cuando la app se cargue, mande a llamar a la primera pagina
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/widgets/widgets.dart';
@@ -19,7 +19,8 @@ class HomeView extends ConsumerStatefulWidget {
       HomeViewState(); //ESTO VENDRIA A SER UNA INSTANCIA DE LA CALSE _HomeViewState
 }
 
-class HomeViewState extends ConsumerState<HomeView> {
+class HomeViewState extends ConsumerState<HomeView>
+    with AutomaticKeepAliveClientMixin {
   //aqui en lugar de State va a ser un ConsumerState, esto por que transformamos el StatefulWidget a  ConsumerStatefulWidget
 
   //este init es propo de un statefullwiget
@@ -43,17 +44,18 @@ class HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); //esto es para que no se pierda el estado del widget
     //aqui vamos a renderizar la data, es decir vamos a poder ver la data en la pantalla
-    final itialLoadig = ref.watch(initialLoadingProvider);
-    if(itialLoadig) return const FullScreenLoader();
-
+    final initialLoadig = ref.watch(initialLoadingProvider);
+    if (initialLoadig) return const FullScreenLoader();
+    FlutterNativeSplash.remove(); //removemos el splash screen cuando todo ya esta cargado
     final slideShowMovies = ref.watch(
         moviesSlideshowProvider); //este provaider lo utilizamos para mostrar una subista de 6 peliculas
     final nowPlayingMovies = ref.watch(
         nowPlayingMoviesProvider); //este va a ser el listado de peliculas
-    final popularMovies = ref.watch(popularMoviesProvider);
-    final upcomingMovies = ref.watch(upcomingMoviesProvider);
     final topRatedMovies = ref.watch(topRatedMoviesProvider);
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+    //final popularMovies = ref.watch(popularMoviesProvider); Ya no estará aquí, ahora es parte del menú inferior
 
     //el "SingleChildScrollView" me sirve para mostrar varios "MovieHorizontalListview"
     //para que el appbar se mueva justo cuando estoy ahciendo scroll, debo utilizar "CustomScrollView" en lugar de "SingleChildScrollView"
@@ -94,6 +96,7 @@ class HomeViewState extends ConsumerState<HomeView> {
                       ref.read(upcomingMoviesProvider.notifier).loadNextPage(),
                 ),
 
+                /*Ya no estará aquí, ahora es parte del menú inferior
                 //mostrar peliculas populares
                 MovieHorizontalListview(
                   movies: popularMovies,
@@ -102,7 +105,7 @@ class HomeViewState extends ConsumerState<HomeView> {
                   loadNextPage: () =>
                       ref.read(popularMoviesProvider.notifier).loadNextPage(),
                 ),
-
+                */
                 //mostrar peliculas mejor calificadas
                 MovieHorizontalListview(
                   movies: topRatedMovies,
@@ -137,4 +140,7 @@ class HomeViewState extends ConsumerState<HomeView> {
       ],
     );*/
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -1,6 +1,7 @@
 //esta implementacion va a llamar el datasource y del datasource va a llamar esos metodos
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/video.dart';
 import 'package:cinemapedia/domain/repositories/movie_repository.dart';
 
 //utilizamos "ctrl + .", para crear el override faltante
@@ -44,5 +45,15 @@ class MovieRepositoryImpl extends MoviesRepository {
   @override
   Future<List<Movie>> searchMovies(String query) {
     return datasource.searchMovies(query);
+  }
+
+  @override
+  Future<List<Movie>> getSimilarMovies(int movieId) {
+     return datasource.getSimilarMovies(movieId);
+  }
+
+  @override
+  Future<List<Video>> getYoutubeVideosById(int movieId) {
+     return datasource.getYoutubeVideosById(movieId);
   }
 }

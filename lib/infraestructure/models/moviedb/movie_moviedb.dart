@@ -40,7 +40,7 @@ class MovieMovieDB {
         originalTitle: json["original_title"],
         overview: json["overview"] ?? '',
         popularity: json["popularity"]?.toDouble(),
-        posterPath: json["poster_path"] ?? '',
+        posterPath: json["poster_path"] ?? '',//si es que no hay posterPath, entonces va a ser un string vacio
         //aqui voy a validar para que no me de error cuando no tenga la fecha
         //aqui valido que hacer si es que es nulo
         releaseDate:json["release_date"] !=null && json["release_date"].toString().isNotEmpty//si json["release_date"] es diferente de null y no esta vacio

@@ -35,7 +35,7 @@ class MovieMapNotifier extends StateNotifier<Map<String,Movie>> {
   //qui mandamos a llamar la implementacion que trae la pelicula
   Future<void> loadMovie(String movieId) async {
     if (state[movieId] != null) return; //si el state tiene una pelicula con ese id entonces ya no voy a regresar nadaprint('realizando una peticion http')
-    final movie = await getMovie(movieId); //caso contrario pedymos la pelicula
+    final movie = await getMovie(movieId); //caso contrario pedimos la pelicula
     state = {...state, movieId: movie}; //actualizamos el estado
   }
 }

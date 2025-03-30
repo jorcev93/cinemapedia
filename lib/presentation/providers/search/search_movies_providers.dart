@@ -20,7 +20,7 @@ class SearchedMoviesNotifier extends StateNotifier<List<Movie>> {
   final SearchMoviesCallback searchMovies;
   final Ref ref; //esto me sirve para proporcinar la referencia al widget ref
   SearchedMoviesNotifier({required this.ref, required this.searchMovies})
-      : super([]);
+      : super([]);//inicializa el estado en una lista vacia
   Future<List<Movie>> searchMoviesByQuery(String query) async {
     final List<Movie> movies = await searchMovies(query);
     ref.read(searchQueryProvider.notifier).update((state) => query);

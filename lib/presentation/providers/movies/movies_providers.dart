@@ -52,17 +52,21 @@ typedef MovieCallback = Future<List<Movie>> Function({int page});
 class MoviesNotifier extends StateNotifier<List<Movie>> {
   //este notifier lo estoy creando de manera general por que me va a servir para muchas cosas
   int currentPage = 0; //variable para saber la pagina actual
-
+  bool isLoading= false; //variable para saber si esta cargando
   MovieCallback fetchMoreMovies;
 
-  MoviesNotifier({required this.fetchMoreMovies}) : super([]);
+  MoviesNotifier({required this.fetchMoreMovies}) : super([]);//aqui le paso un listado vacio
   //el objetivo de este es hacer una modificacion en el state
   Future<void> loadNextPage() async {
+    if(isLoading) return; //si esta cargando, no hagas nada
+    isLoading = true; //si no esta cargando, entonces ponlo en true
     currentPage++; //cada ves que se llame a loadNextPage, va a incrementar en uno
     final List<Movie> movies = await fetchMoreMovies(page: currentPage);
     state = [
       ...state,
       ...movies
     ]; //aqui utilizamos el operador expec para que sea mas facil de escribirlo
+    await Future.delayed(const Duration(seconds: 300)); //esto es para simular una carga
+    isLoading = false; //cuando termine de cargar, ponlo en false
   }
 }

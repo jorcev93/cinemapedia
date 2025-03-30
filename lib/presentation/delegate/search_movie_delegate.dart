@@ -21,10 +21,14 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       .broadcast(); //asi se escucha una lista de listeners de varios lugares
   StreamController<bool> isLoadingStream = StreamController
       .broadcast(); //este es para el icono de carga al momendo de buscar
-
-  SearchMovieDelegate(
-      {required this.searchMovies, required this.initialMovies});
   Timer? _debounceTimer; //esto me permite determinar un periodo de tiempo
+  SearchMovieDelegate({
+    required this.searchMovies,
+    required this.initialMovies,
+  }):super(
+    searchFieldLabel: 'Buscar películas',
+    // textInputAction: TextInputAction.done
+  );
 
   //metodo para cerrar los streams
   //lo voy a mandar a llamar cuando ya no vaya a utilizar el delegate
@@ -120,7 +124,8 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   Widget buildResultsAndSuggestions() {
     return StreamBuilder(
-        stream: debouncedMovies.stream,
+      initialData: initialMovies,//aqui le paso las peliculas iniciales
+        stream: debouncedMovies.stream,//aqui le paso las peliculas que se van a buscar
         builder: (context, snapshot) {
           final movies = snapshot.data ?? [];
           return ListView.builder(

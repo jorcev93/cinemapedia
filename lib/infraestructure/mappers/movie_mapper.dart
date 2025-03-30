@@ -12,9 +12,12 @@ class MovieMapper {
       //aqui vamos a validar si es que el backdropPath es diferente de un string vacio, entonces
       //coloco la imagen que viede desde el api,
       //caso contrario voy a utilizar una imagen por defecto (en este caso busque una imagen cualquiera de internet)
-      backdropPath: (moviedb.backdropPath != '') 
-        ? 'https://image.tmdb.org/t/p/w500${ moviedb.backdropPath }'
-        : 'https://sd.keepcalms.com/i-w600/keep-calm-poster-not-found.jpg',
+      // backdropPath: (moviedb.backdropPath != '') 
+      //   ? 'https://image.tmdb.org/t/p/w500${ moviedb.backdropPath }'
+      //   : '/assets/errors/image-not-found.png',
+      backdropPath: (moviedb.backdropPath != null && moviedb.backdropPath.isNotEmpty)
+    ? 'https://image.tmdb.org/t/p/w500${moviedb.backdropPath}'
+    : '/assets/errors/not-found.png',
       genreIds: moviedb.genreIds.map((e) => e.toString()).toList(),//con el map transformamos los enteros a string
       id: moviedb.id,
       originalLanguage: moviedb.originalLanguage,
@@ -26,7 +29,7 @@ class MovieMapper {
       //caso contrario voy a utilizar una imagen por defecto (en este caso busque una imagen cualquiera de internet)
       posterPath: (moviedb.posterPath != '')
         ? 'https://image.tmdb.org/t/p/w500${ moviedb.posterPath }'
-        : 'no-poster',//si es que intento leer el caso cotrario de esta condicion va a saltar un error, por que eso no se va a oder mostrar en un widget, para eso en el data source se utiliza el where para evitar hacer validaciones en flutter
+        : 'assets/errors/not-found.png',//si es que intento leer el caso cotrario de esta condicion va a saltar un error, por que eso no se va a oder mostrar en un widget, para eso en el data source se utiliza el where para evitar hacer validaciones en flutter
       //como modifique valide la fecha en el moviedb en la carpeta models aqui tmbien tengo que validar
       releaseDate: moviedb.releaseDate!=null ? moviedb.releaseDate!:DateTime.now(),
       title: moviedb.title,
@@ -40,17 +43,17 @@ class MovieMapper {
       adult: moviedb.adult,
       backdropPath: (moviedb.backdropPath != '') 
         ? 'https://image.tmdb.org/t/p/w500${ moviedb.backdropPath }'
-        : 'https://sd.keepcalms.com/i-w600/keep-calm-poster-not-found.jpg',
+        : 'assets/errors/not-found.png',
       genreIds: moviedb.genres.map((e) => e.name ).toList(),
       id: moviedb.id,
       originalLanguage: moviedb.originalLanguage,
       originalTitle: moviedb.originalTitle,
       overview: moviedb.overview,
       popularity: moviedb.popularity,
-      posterPath: (moviedb.posterPath != '')
-        ? 'https://image.tmdb.org/t/p/w500${ moviedb.posterPath }'
-        : 'https://sd.keepcalms.com/i-w600/keep-calm-poster-not-found.jpg',
-      releaseDate: moviedb.releaseDate,
+      posterPath: (moviedb.posterPath != '')//aqui vamos a validar si es que el posterPath es diferente de un string vacio, entonces
+        ? 'https://image.tmdb.org/t/p/w500${ moviedb.posterPath }'//coloco la imagen que viede desde el api,
+        : 'assets/errors/not-found.png',//caso contrario voy a utilizar una imagen por defecto (en este caso busque una imagen cualquiera de internet)
+     releaseDate: moviedb.releaseDate != null ? moviedb.releaseDate! : DateTime.now(),
       title: moviedb.title,
       video: moviedb.video,
       voteAverage: moviedb.voteAverage,

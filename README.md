@@ -57,3 +57,25 @@ Ejecuto el comando en la terminal:
 dart run flutter_launcher_icons
 
 ......
+
+PARA CAMBIAR EL SPLASH SCREEN
+......
+Se instala el paquete:
+  flutter_native_splash
+
+En el yaml se agrega la configuracion:
+  flutter_native_splash:
+  color: "#252829"
+  image: "assets/icon/app-icon-2.png"
+  android: true
+  ios: true
+
+Se ejecuta el comando:
+  flutter pub run flutter_native_splash:create
+......
+
+ANDROID AAB
+......
+Se ejecuta el comando:
+  flutter build appbundle
+......

@@ -3,11 +3,11 @@
 //EL PAQUETE SE LLAMA: card_swiper
 //NOTA2: PARA LAS ANIMACIONES DE LA IMAGEN UTILIZAMOS FadeIn
 //DEL PAQUETE QUE SE LLAMA: animate_do
-import 'package:animate_do/animate_do.dart';
-import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-
+import 'package:card_swiper/card_swiper.dart';
 import '../../../domain/entities/movie.dart';
+import 'package:go_router/go_router.dart';
+
 
 class MoviesSlideshow extends StatelessWidget {
   final List<Movie>
@@ -72,6 +72,8 @@ class _Slide extends StatelessWidget {
             offset: Offset(0, 10), //son las coordenadas "x" e "y", de la sombra
           )
         ]);
+
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 30),
       child: DecoratedBox(
@@ -79,6 +81,15 @@ class _Slide extends StatelessWidget {
         child: ClipRRect(
             //este ClipRRect, permite poder borde redondeado al widget
             borderRadius: BorderRadius.circular(20),
+            child: GestureDetector(
+            onTap: () => context.push('/home/0/movie/${ movie.id }'),
+            child: FadeInImage(
+              fit: BoxFit.cover,
+              placeholder: const AssetImage('assets/loaders/bottle-loader.gif'),
+              image: NetworkImage(movie.backdropPath),
+            ),
+            
+            /*
             child: Image.network(
               movie.backdropPath,
               fit: BoxFit.cover,
@@ -91,8 +102,9 @@ class _Slide extends StatelessWidget {
                 //para utilizar FadeIn, debemos isntalar el paquete "animate_do"
                 return FadeIn(child: child);//este chil basicamente es lo que ya construimos, sea con la imagen o no 
               },
-            )),
+            )*/
+            ),
       ),
-    );
+    ));
   }
 }

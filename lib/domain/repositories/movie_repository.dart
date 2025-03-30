@@ -9,6 +9,7 @@
 //en este datasource voy a definir como lucen los origenes de datos que pueden traer datos de cualquier dato
 //basicamente aqui defino los metodos que voy a utilizar para traer los datos
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/video.dart';
 
 abstract class MoviesRepository {
   //estoy definiendo el metodo que sirve para que me traiga
@@ -31,4 +32,8 @@ abstract class MoviesRepository {
 
 //para buscar la pelicula
   Future<List<Movie>> searchMovies(String query);
+
+  Future<List<Movie>> getSimilarMovies( int movieId );
+
+  Future<List<Video>> getYoutubeVideosById( int movieId );
 }

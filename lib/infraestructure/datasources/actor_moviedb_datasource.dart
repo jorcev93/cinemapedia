@@ -17,7 +17,7 @@ class ActorMovieDbDatasource extends ActorsDatasource {
         'languaje': 'es-MX'
       }));
   
-  
+  /*
   //Este Metodo es para mandar a llamar las actores de las peliculas
   List<Actor> _jsonActoresToMovie(Map<String, dynamic> json) {
     //cuando mando a llamar la data desde el api, tengo que procesarla
@@ -32,11 +32,16 @@ class ActorMovieDbDatasource extends ActorsDatasource {
         .toList();
     return actores;
   }
-
+ */
   @override
-  Future<List<Actor>> getActorsByMovie(String movieId) async {
+  Future<List<Actor>> getActorsByMovie(String movieId) async {//este metodo recibe el id de la pelicula
+    //aqui vamos a realizar la peticion al api de moviedb
     final response = await dio.get('/movie/$movieId/credits');
-    if (response.statusCode != 200)throw Exception('Movie with id: $movieId not found'); //valido si esque existe el id de la pelicula
-    return _jsonActoresToMovie(response.data);
+    final castResponse = CreditsResponse.fromJson(response.data);//aqui recibimos la data
+    //aqui mapeamos la data y la retornamos
+    List<Actor> actors = castResponse.cast.map(
+      (cast) => ActorMapper.castToEntity(cast)
+    ).toList();
+    return actors;
   }
 }

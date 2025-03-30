@@ -30,7 +30,7 @@ class CustomAppbar extends ConsumerWidget {
                 color: colors.primary), //es el icono del appbar
             const SizedBox(width: 5), //espacio entre icono y el Text del appbar
             Text(
-              'Cinepedia',
+              'Infocine',
               style: titleStyle,
             ),
             const Spacer(), //este espacer hace que el icono de busqueda se separe del texto "cinepedia" y se ubique al final
@@ -46,8 +46,8 @@ class CustomAppbar extends ConsumerWidget {
                       query: searchQuery,
                       context: context,
                       //el delegate es el que se va a encargar de realizar la busqueda
-                      delegate: SearchMovieDelegate
-                      (initialMovies: searchedMovies,
+                      delegate: SearchMovieDelegate(
+                        initialMovies: searchedMovies,
                         searchMovies: ref.read(searchedMoviesProvider.notifier).searchMoviesByQuery)).then((movie) {
                     //con esto hago que al cerrar el search, al cerrarce almacene el id de la pelicula selecionada
                     if (movie == null) return;

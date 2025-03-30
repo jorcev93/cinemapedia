@@ -15,8 +15,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:animate_do/animate_do.dart';
 
+import '../../../config/helpers/human_formats.dart';
 import '../../../domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import '../../widgets/widgets.dart';
 
 //vamos a cambiar el StatefulWidget por un ConsumerStatefulWidget, para poder teer acceso al scope de de nuestro provider
 class MovieScreen extends ConsumerStatefulWidget {
@@ -70,7 +72,7 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
 
 //va a permitir saber si el corazon de favoritos esta seleccionado o no
 //al utilizar el .famyli estamos el FutureProvider permite tener un valor boleano y un argumento de ualqueir tipo en este caso un int
-final isFavoriteProvider = FutureProvider.family((ref, int movieId) {
+final isFavoriteProvider = FutureProvider.family.autoDispose((ref, int movieId) {
   final localStorageRepository = ref.watch(localStorageRepositoryProvider);
   return localStorageRepository.isMovieFavorite(movieId);
 });
@@ -81,9 +83,10 @@ class _CustomSliverAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isFavoiteFuture = ref.watch(isFavoriteProvider(movie.id));
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
     final size =
         MediaQuery.of(context).size; //con esto se el tamaño del dipositivo
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;//con esto se obtiene el color de fondo del scaffold
     //aqui vamos a empezar a construir un appbar perzonalizado
     return SliverAppBar(
       backgroundColor: Colors.black,
@@ -93,12 +96,16 @@ class _CustomSliverAppBar extends ConsumerWidget {
       actions: [
         IconButton(
           onPressed: () async{
+            /*Sin utilizar mixin
             //realizar el toggle, para eso buscamos el provider
             ref.watch(localStorageRepositoryProvider).toggleFavorite(movie);
+            */
+            //utilizando mixin
+            await ref.read(favoriteMoviesProvider.notifier).toggleFavorite(movie);
             ref.invalidate(isFavoriteProvider(movie
                 .id)); //lo invalidadmos para que vuelva a realizr la peticion y asi confirmamos que esta o no dentro de favoritos
           },
-          icon: isFavoiteFuture.when(
+          icon: isFavoriteFuture.when(
             loading: () => const CircularProgressIndicator(
                 strokeWidth:
                     2), //este progress indicator no lo vamos a ver nunca por que el acceso a la db es muy rapido
@@ -112,12 +119,15 @@ class _CustomSliverAppBar extends ConsumerWidget {
         )
       ],
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        /* title: Text(
-          movie.title,
-          style: const TextStyle(fontSize: 20),
-          textAlign: TextAlign.start,
-        ), */
+        titlePadding: const EdgeInsets.only(bottom: 0),
+        title:  _CustomGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.7, 1.0],
+          colors: [
+            Colors.transparent,
+            scaffoldBackgroundColor
+          ]),
         //el stack me permite colocar widgets unos sobre ottros
         background: Stack(
           children: [
@@ -136,10 +146,14 @@ class _CustomSliverAppBar extends ConsumerWidget {
             /*Gradiente para favoritos */
             //gradiente utilizando codigo reutilizable
             const _CustomGradient(
-                begin: Alignment.topRight,
+               begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 stops: [0.0, 0.2],
-                colors: [Colors.black54, Colors.transparent]),
+                colors: [
+                  Colors.black54,
+                  Colors.transparent,
+                ]
+            ),
 
             //sin reutilizar codigo
             /*
@@ -217,6 +231,32 @@ class _CustomSliverAppBar extends ConsumerWidget {
   }
 }
 
+//Gradiante personalizado
+//este widget me va a permitir reutilizar el codigo de los gradientes
+class _CustomGradient extends StatelessWidget {
+  final AlignmentGeometry begin;
+  final AlignmentGeometry end;
+  final List<double> stops;
+  final List<Color> colors;
+
+  const _CustomGradient(
+      {this.begin = Alignment.centerLeft,
+      this.end = Alignment.centerRight,
+      required this.stops,
+      required this.colors});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: DecoratedBox(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: begin, end: end, stops: stops, colors: colors))),
+    );
+  }
+}
+
+
 class _MovieDetails extends StatelessWidget {
   final Movie movie;
   const _MovieDetails({required this.movie});
@@ -226,8 +266,26 @@ class _MovieDetails extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final textStyles = Theme.of(context).textTheme;
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start, //va a estar alineado al inicio
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        //* Titulo, OverView y Rating
+        _TitleAndOverview(movie: movie, size: size, textStyles: textStyles),
+
+        //* Generos de la película
+        _Genres(movie: movie),
+
+
+        //* Actores de la película
+      _ActorsByMovie(movieId: movie.id.toString() ),
+
+        //* Videos de la película (si tiene)
+        VideosFromMovie( movieId: movie.id ),
+
+        //* Películas similares
+        SimilarMovies(movieId: movie.id ),
+
+      ], //va a estar alineado al inicio
+      /*Antes de utilizar mixin
       children: [
         Padding(
             padding: const EdgeInsets.all(8),
@@ -279,10 +337,102 @@ class _MovieDetails extends StatelessWidget {
         const SizedBox(
           height: 50,
         )
-      ],
+      ],*/
     );
   }
 }
+
+class _Genres extends StatelessWidget {
+  const _Genres({
+    required this.movie,
+  });
+
+  final Movie movie;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SizedBox(
+        width: double.infinity,
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
+          children: [
+            ...movie.genreIds.map((gender) => Container(
+              margin: const EdgeInsets.only( right: 10),
+              child: Chip(
+                label: Text( gender ),
+                shape: RoundedRectangleBorder( borderRadius: BorderRadius.circular(20)),
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TitleAndOverview extends StatelessWidget {
+  const _TitleAndOverview({
+    required this.movie,
+    required this.size,
+    required this.textStyles,
+  });
+
+  final Movie movie;
+  final Size size;
+  final TextTheme textStyles;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric( horizontal: 8, vertical: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          
+          // Imagen
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              movie.posterPath,
+              width: size.width * 0.3,
+            ),
+          ),
+
+          const SizedBox( width: 10 ),
+
+          // Descripción
+          SizedBox(
+            width: (size.width - 40) * 0.7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text( movie.title, style: textStyles.titleLarge ),
+                Text( movie.overview ),
+
+                const SizedBox(height: 10 ),
+                
+                MovieRating(voteAverage: movie.voteAverage ),
+
+                Row(
+                  children: [
+                    const Text('Estreno:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(width: 5 ),
+                    Text(HumanFormats.shortDate(movie.releaseDate))
+                  ],
+                )
+              ],
+            ),
+          )
+
+        ],
+      ),
+    );
+  }
+}
+
 
 class _ActorsByMovie extends ConsumerWidget {
   final String movieId;
@@ -344,29 +494,6 @@ class _ActorsByMovie extends ConsumerWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class _CustomGradient extends StatelessWidget {
-  final AlignmentGeometry begin;
-  final AlignmentGeometry end;
-  final List<double> stops;
-  final List<Color> colors;
-
-  const _CustomGradient(
-      {this.begin = Alignment.centerLeft,
-      this.end = Alignment.centerRight,
-      required this.stops,
-      required this.colors});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: DecoratedBox(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: begin, end: end, stops: stops, colors: colors))),
     );
   }
 }
