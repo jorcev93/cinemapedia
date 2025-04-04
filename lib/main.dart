@@ -24,9 +24,7 @@ Future<void> main() async {
  */
 Future<void> main() async {
   FlutterNativeSplash.preserve(widgetsBinding: WidgetsFlutterBinding.ensureInitialized());//Se añade luego de ejecutar el comando que pide ejecutar el paquete flutter_native_splash
-  await dotenv.load(
-      fileName:
-          '.env'); //inicializamos el paquete para que lea el archivo .env, y se pueda utilizar de forma global
+  await dotenv.load(fileName:'.env'); //inicializamos el paquete para que lea el archivo .env, y se pueda utilizar de forma global
   //una vez instalado riverpod debemos hacer lo siguiente
   initializeDateFormatting('es');//para que las fechas se muestren en español
   runApp(const ProviderScope(child: MainApp()));//el providerScope, es el que va a contener la referencia a todos los providers de riverpod
