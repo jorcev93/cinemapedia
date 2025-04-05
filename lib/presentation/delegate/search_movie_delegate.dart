@@ -93,8 +93,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
           //si esque esta vacio no va a aparecer el icono "X", para borrar lo que estabamos escribiendo
           //if (query.isEmpty) esta validacion la puedo ahcer directamente desde FadeIn con esta linea "animate: query.isEmpty"
           return FadeIn(
-            animate: query
-                .isNotEmpty, //valido si esque el cuadro de busqueda esta vacio o no
+            animate: query.isNotEmpty, //valido si esque el cuadro de busqueda esta vacio o no
             duration: const Duration(
                 milliseconds:
                     200), //determino el timpeo de espera para que aparezca el boton de borrar
@@ -182,7 +181,8 @@ class _MovieItem extends StatelessWidget {
       onTap: () {
         onMovieSelected(context, movie);
       },
-      child: Padding(
+      child: FadeIn(
+        child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Row(
           children: [
@@ -190,8 +190,13 @@ class _MovieItem extends StatelessWidget {
             SizedBox(
               width: size.width * 0.20,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(movie.posterPath),
+                borderRadius: BorderRadius.circular(10),
+               child: FadeInImage(
+                    height: 130,
+                    fit: BoxFit.cover,
+                    image: NetworkImage(movie.posterPath),
+                    placeholder: const AssetImage('assets/loaders/bottle-loader.gif'),
+                  )
               ),
             ),
 
@@ -232,6 +237,8 @@ class _MovieItem extends StatelessWidget {
           ],
         ),
       ),
+      )
+      
     );
   }
 }

@@ -41,7 +41,7 @@ class CustomAppbar extends ConsumerWidget {
                   final searchedMovies = ref.read(searchedMoviesProvider);
                   final searchQuery = ref.read(searchQueryProvider);
                   //aqui ytiizamos una funcion propia de flutter para las busquedas
-                  //decimos qu eva a recibir una pelicula pero esta es o
+                  //decimos que va a recibir una pelicula pero esta es o
                   showSearch<Movie?>(
                       query: searchQuery,
                       context: context,
@@ -52,8 +52,7 @@ class CustomAppbar extends ConsumerWidget {
                     //con esto hago que al cerrar el search, al cerrarce almacene el id de la pelicula selecionada
                     if (movie == null) return;
                     //me envia a la pagina de la pelicula selecionada
-                    context.push(
-                        '/movie/${movie.id}'); //con esto voy a tmar el valor del contexto cuando se llame a la funcion
+                    context.push('/home/0/movie/${movie.id}'); //con esto voy a tmar el valor del contexto cuando se llame a la funcion
                   });
                 },
                 icon: const Icon(Icons.search))
