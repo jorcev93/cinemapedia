@@ -3,14 +3,14 @@
 1. Copiar el .env.template y renomdrarlo a .env
 2. cambiar las variables de entorno (THE_MOVIEDB_KEY)
 3. Cambios en la entidad, hay que ejecutar el comando 
-......
+```
 flutter pub run build_runner build
-......
+```
 A new Flutter project.
 
 # Para producción
 PARA CAMBIAR EL NOMBRE DE LA APP
-......
+```
 Utilizo el paquete:
 change_app_package_name
 
@@ -31,10 +31,10 @@ dart run change_app_package_name:main com.jorcev.infocine
 
 Nota:
 Despues de cambiar el nombre de la app podemos eliminar el paquete si se desea 
-......
+```
 
 # PARA CAMBIAR EL ICONO DE LA APP
-......
+```
 Utilizo el paquete:
 flutter_launcher_icons
 
@@ -56,10 +56,10 @@ Copio en el directorio el icono que voy a utilizar
 Ejecuto el comando en la terminal:
 dart run flutter_launcher_icons
 
-......
+```
 
 # PARA CAMBIAR EL SPLASH SCREEN
-......
+```
 Se instala el paquete:
   flutter_native_splash
 
@@ -72,10 +72,10 @@ En el yaml se agrega la configuracion:
 
 Se ejecuta el comando:
   flutter pub run flutter_native_splash:create
-......
+```
 
 ANDROID AAB
-......
+```
 Se ejecuta el comando:
   flutter build appbundle
-......
+```
