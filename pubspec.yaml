@@ -1,0 +1,57 @@
+name: cinemapedia
+description: "A new Flutter project."
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.3.2 <4.0.0"
+
+dependencies:
+  animate_do: ^4.2.0
+  card_swiper: ^3.0.1
+  dio: ^5.4.3+1
+  flutter:
+    sdk: flutter
+  flutter_dotenv: ^5.1.0
+  flutter_native_splash: 2.4.1
+  flutter_riverpod: ^2.5.1
+  flutter_staggered_grid_view: ^0.7.0
+  go_router: ^14.1.4
+  intl: ^0.20.2
+  isar: ^3.1.0+1
+  isar_flutter_libs: ^3.1.0+1
+  path_provider: ^2.1.3
+  youtube_player_flutter: ^8.1.2
+
+dev_dependencies:
+  build_runner: ^2.4.11
+  change_app_package_name: ^1.5.0
+  flutter_launcher_icons: ^0.14.3
+  flutter_lints: ^4.0.0
+  flutter_test:
+    sdk: flutter
+  isar_generator: ^3.1.0+1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/app-icon-2.jpg"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "#ffffff"
+
+flutter_native_splash:
+  color: "#ffffff"
+  icon_background_color: "#ffffff"
+  android_12:
+    icon_background_color: "#ffffff"
+  
+
+flutter:
+  uses-material-design: true
+  assets:
+    - .env
+    - assets/icon/
+    - assets/loaders/
+    - assets/errors/
+
