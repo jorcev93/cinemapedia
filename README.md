@@ -33,7 +33,7 @@ Nota:
 Despues de cambiar el nombre de la app podemos eliminar el paquete si se desea 
 ......
 
-PARA CAMBIAR EL ICONO DE LA APP
+# PARA CAMBIAR EL ICONO DE LA APP
 ......
 Utilizo el paquete:
 flutter_launcher_icons
@@ -58,7 +58,7 @@ dart run flutter_launcher_icons
 
 ......
 
-PARA CAMBIAR EL SPLASH SCREEN
+# PARA CAMBIAR EL SPLASH SCREEN
 ......
 Se instala el paquete:
   flutter_native_splash
