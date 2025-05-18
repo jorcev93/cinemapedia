@@ -1,7 +1,7 @@
 name: cinemapedia
 description: "A new Flutter project."
 publish_to: "none"
-version: 0.1.0
+version: 0.1.0+4 #Aqui tambien cambio la version de la app
 
 environment:
   sdk: ">=3.3.2 <4.0.0"
